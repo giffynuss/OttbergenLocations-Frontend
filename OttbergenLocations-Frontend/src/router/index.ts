@@ -4,8 +4,20 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: 'startseite',
+    component: () => import('../views/StartseiteView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/home',
     name: 'home',
     component: () => import('../views/HomeView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: () => import('../views/AboutView.vue'),
     meta: { requiresAuth: false }
   },
   {
