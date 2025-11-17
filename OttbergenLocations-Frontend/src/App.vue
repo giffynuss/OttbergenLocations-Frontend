@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
+import { useAuth } from './composables/useAuth'
+
+const { isAuthenticated, currentUser, logout, checkAuth } = useAuth()
+
+// Beim Start der App prüfen ob User bereits eingeloggt ist
+onMounted(() => {
+  checkAuth()
+})
+
+const handleLogout = () => {
+  logout()
+  // Zur Startseite navigieren nach Logout
+  window.location.href = '/'
+}
 </script>
 
 <template>
@@ -12,7 +27,9 @@ import { RouterView } from 'vue-router'
               Buchungsplattform
             </router-link>
           </div>
+
           <div class="flex items-center space-x-4">
+            <!-- Immer sichtbare Navigation -->
             <router-link
               to="/"
               class="text-booking-very-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -20,11 +37,55 @@ import { RouterView } from 'vue-router'
               Home
             </router-link>
             <router-link
-              to="/bookings"
+              to="/search"
               class="text-booking-very-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              Buchungen
+              Suchen
             </router-link>
+
+            <!-- Navigation für eingeloggte Nutzer -->
+            <template v-if="isAuthenticated">
+              <router-link
+                to="/my-bookings"
+                class="text-booking-very-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Meine Buchungen
+              </router-link>
+              <router-link
+                to="/settings"
+                class="text-booking-very-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Einstellungen
+              </router-link>
+
+              <div class="flex items-center space-x-3 ml-4 pl-4 border-l border-booking-medium-brown">
+                <span class="text-booking-very-light text-sm">
+                  {{ currentUser?.name }}
+                </span>
+                <button
+                  @click="handleLogout"
+                  class="bg-booking-medium-brown text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-booking-light-beige hover:text-booking-dark-brown transition-colors"
+                >
+                  Abmelden
+                </button>
+              </div>
+            </template>
+
+            <!-- Navigation für nicht eingeloggte Nutzer -->
+            <template v-else>
+              <router-link
+                to="/login"
+                class="text-booking-very-light hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Anmelden
+              </router-link>
+              <router-link
+                to="/register"
+                class="bg-booking-medium-brown text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-booking-light-beige hover:text-booking-dark-brown transition-colors"
+              >
+                Registrieren
+              </router-link>
+            </template>
           </div>
         </div>
       </div>
