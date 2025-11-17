@@ -114,11 +114,11 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/userStore'
 
 const router = useRouter()
 const route = useRoute()
-const { login } = useAuth()
+const userStore = useUserStore()
 
 // Form Data
 const formData = reactive({
@@ -200,7 +200,7 @@ const handleLogin = () => {
   console.log('=========================')
 
   // Attempt login
-  if (login(formData.email, formData.password)) {
+  if (userStore.login(formData.email, formData.password)) {
     // Weiterleitung zur ursprünglich angeforderten Seite oder Startseite
     const redirect = route.query.redirect as string || '/'
     router.push(redirect)

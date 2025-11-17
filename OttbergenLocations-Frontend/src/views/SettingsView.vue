@@ -338,22 +338,37 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
-import { useAuth } from '../composables/useAuth'
+import { reactive, computed, ref, onMounted } from 'vue'
+import { useUserStore } from '../stores/userStore'
 
-const { currentUser } = useAuth()
+const userStore = useUserStore()
 
-// Mock-Daten für vorausgefülltes Formular
+// Formular-Daten (werden mit echten Nutzerdaten gefüllt)
 const formData = reactive({
-  firstName: 'Max',
-  lastName: 'Mustermann',
-  gender: 'herr',
-  email: currentUser.value?.email || 'max.mustermann@example.com',
-  phone: '+49 151 12345678',
-  street: 'Hauptstraße',
-  houseNumber: '42',
-  zipCode: '37691',
-  city: 'Ottbergen'
+  firstName: '',
+  lastName: '',
+  gender: '' as 'herr' | 'frau' | '',
+  email: '',
+  phone: '',
+  street: '',
+  houseNumber: '',
+  zipCode: '',
+  city: ''
+})
+
+// Daten aus Store laden
+onMounted(() => {
+  if (userStore.currentUser) {
+    formData.firstName = userStore.currentUser.firstName
+    formData.lastName = userStore.currentUser.lastName
+    formData.gender = userStore.currentUser.gender
+    formData.email = userStore.currentUser.email
+    formData.phone = userStore.currentUser.phone
+    formData.street = userStore.currentUser.address.street
+    formData.houseNumber = userStore.currentUser.address.houseNumber
+    formData.zipCode = userStore.currentUser.address.zipCode
+    formData.city = userStore.currentUser.address.city
+  }
 })
 
 // Passwort-Daten
@@ -511,24 +526,22 @@ const savePasswordChange = () => {
     return
   }
 
-  // Console log for backend placeholder
-  console.log('=== PASSWORT ÄNDERN ===')
-  console.log('Aktuelles Passwort:', passwordData.current)
-  console.log('Neues Passwort:', passwordData.new)
-  console.log('Timestamp:', new Date().toISOString())
-  console.log('=======================')
+  // Passwort im Store ändern
+  if (userStore.changePassword(passwordData.current, passwordData.new)) {
+    successMessage.value = 'Passwort wurde erfolgreich geändert'
+    generalError.value = ''
+    showPasswordChange.value = false
+    passwordData.current = ''
+    passwordData.new = ''
+    passwordData.confirm = ''
 
-  successMessage.value = 'Passwort wurde erfolgreich geändert'
-  generalError.value = ''
-  showPasswordChange.value = false
-  passwordData.current = ''
-  passwordData.new = ''
-  passwordData.confirm = ''
-
-  // Success message ausblenden nach 3 Sekunden
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
+    // Success message ausblenden nach 3 Sekunden
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 3000)
+  } else {
+    generalError.value = 'Aktuelles Passwort ist falsch'
+  }
 }
 
 // Handle Save
@@ -544,21 +557,20 @@ const handleSave = () => {
     return
   }
 
-  // Console log for backend placeholder
-  console.log('=== EINSTELLUNGEN SPEICHERN ===')
-  console.log('Stammdaten:')
-  console.log('  Vorname:', formData.firstName)
-  console.log('  Nachname:', formData.lastName)
-  console.log('  Anrede:', formData.gender)
-  console.log('  E-Mail:', formData.email)
-  console.log('  Telefon:', formData.phone)
-  console.log('Adresse:')
-  console.log('  Straße:', formData.street)
-  console.log('  Hausnummer:', formData.houseNumber)
-  console.log('  PLZ:', formData.zipCode)
-  console.log('  Ort:', formData.city)
-  console.log('Timestamp:', new Date().toISOString())
-  console.log('===============================')
+  // Update im Store speichern
+  userStore.updateProfile({
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    gender: formData.gender as 'herr' | 'frau',
+    email: formData.email,
+    phone: formData.phone,
+    address: {
+      street: formData.street,
+      houseNumber: formData.houseNumber,
+      zipCode: formData.zipCode,
+      city: formData.city
+    }
+  })
 
   successMessage.value = 'Einstellungen wurden erfolgreich gespeichert'
 

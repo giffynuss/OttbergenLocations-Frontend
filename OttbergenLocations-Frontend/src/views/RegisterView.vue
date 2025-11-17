@@ -327,10 +327,10 @@
 <script setup lang="ts">
 import { reactive, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/userStore'
 
 const router = useRouter()
-const { register } = useAuth()
+const userStore = useUserStore()
 
 // Form Data
 const formData = reactive({
@@ -511,11 +511,21 @@ const handleRegister = () => {
   console.log('=====================================')
 
   // Attempt registration
-  const fullName = `${formData.firstName} ${formData.lastName}`
-  if (register(fullName, formData.email, formData.password)) {
+  if (userStore.register({
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    password: formData.password,
+    phone: formData.phone,
+    gender: formData.gender as 'herr' | 'frau',
+    street: formData.street,
+    houseNumber: formData.houseNumber,
+    zipCode: formData.zipCode,
+    city: formData.city
+  })) {
     router.push('/')
   } else {
-    generalError.value = 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.'
+    generalError.value = 'Registrierung fehlgeschlagen. E-Mail bereits vorhanden.'
   }
 }
 </script>

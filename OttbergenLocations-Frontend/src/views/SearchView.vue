@@ -164,123 +164,56 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useBookingStore } from '../stores/bookingStore'
+import { useUserStore } from '../stores/userStore'
 
-interface Place {
-  id: number
-  name: string
-  description: string
-  location: string
-  capacity: number
-  pricePerDay: number
-  latitude?: number
-  longitude?: number
-}
+const bookingStore = useBookingStore()
+const userStore = useUserStore()
 
-// Suchformular
-const searchQuery = ref('')
-const checkInDate = ref('')
-const checkOutDate = ref('')
-
-// Mock-Daten für 4 Beispiel-Orte
-const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: 'Kulturraum Ottbergen',
-    description: 'Ein wunderschöner Veranstaltungsraum im Herzen von Ottbergen. Perfekt für Hochzeiten, Firmenfeiern und kulturelle Events. Mit moderner Ausstattung und historischem Charme.',
-    location: 'Ottbergen',
-    capacity: 100,
-    pricePerDay: 250
-  },
-  {
-    id: 2,
-    name: 'Gemeindesaal St. Marien',
-    description: 'Heller und freundlicher Saal mit Bühne und Nebenräumen. Ideal für Familienfeiern, Konzerte und Workshops. Küche und Sanitäranlagen vorhanden.',
-    location: 'Ottbergen Nord',
-    capacity: 60,
-    pricePerDay: 150
-  },
-  {
-    id: 3,
-    name: 'Dorfgemeinschaftshaus',
-    description: 'Traditionelles Gemeinschaftshaus mit rustikalem Charme. Bietet Platz für kleinere Veranstaltungen und Treffen. Voll ausgestattete Küche inklusive.',
-    location: 'Ottbergen Süd',
-    capacity: 40,
-    pricePerDay: 120
-  },
-  {
-    id: 4,
-    name: 'Scheune am Waldrand',
-    description: 'Umgebaute historische Scheune mit besonderem Ambiente. Perfekt für rustikale Hochzeiten und Gartenpartys. Große Außenfläche mit Gartenmöbeln verfügbar.',
-    location: 'Ottbergen West',
-    capacity: 80,
-    pricePerDay: 300
-  }
-]
-
-const searchResults = ref<Place[]>([...mockPlaces])
-const selectedPlace = ref<Place | null>(null)
-
-// Berechnung der Anzahl der Tage
-const numberOfDays = computed(() => {
-  if (!checkInDate.value || !checkOutDate.value) return 0
-
-  const checkIn = new Date(checkInDate.value)
-  const checkOut = new Date(checkOutDate.value)
-  const diffTime = checkOut.getTime() - checkIn.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-  return diffDays > 0 ? diffDays : 0
-})
+// Reactive state aus Store
+const {
+  searchResults,
+  selectedPlace,
+  searchQuery,
+  checkInDate,
+  checkOutDate,
+  numberOfDays
+} = storeToRefs(bookingStore)
 
 // Gesamtpreis für einen Ort berechnen
 const calculatePlaceTotal = (pricePerDay: number) => {
-  return pricePerDay * numberOfDays.value
+  return bookingStore.calculatePlaceTotal(pricePerDay)
 }
 
 // Gesamtpreis berechnen (wenn Daten sich ändern)
 const calculateTotalPrice = () => {
-  // Logik für Preisberechnung wird hier ausgeführt
   console.log('Tage:', numberOfDays.value)
 }
 
 // Suche durchführen
 const performSearch = () => {
-  if (!searchQuery.value.trim()) {
-    searchResults.value = [...mockPlaces]
-    return
-  }
-
-  searchResults.value = mockPlaces.filter(place =>
-    place.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-
-  console.log('=== SUCHE DURCHGEFÜHRT ===')
-  console.log('Suchbegriff:', searchQuery.value)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Anzahl Ergebnisse:', searchResults.value.length)
-  console.log('=========================')
+  bookingStore.performSearch()
 }
 
 // Ort buchen
-const bookPlace = (place: Place) => {
+const bookPlace = (place: any) => {
   if (!checkInDate.value || !checkOutDate.value) {
     alert('Bitte wählen Sie Check-in und Check-out Datum')
     return
   }
 
-  console.log('=== BUCHUNG ===')
-  console.log('Ort:', place.name)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Tage:', numberOfDays.value)
-  console.log('Gesamtpreis:', calculatePlaceTotal(place.pricePerDay), '€')
-  console.log('===============')
+  if (!userStore.isAuthenticated) {
+    alert('Bitte melden Sie sich an, um eine Buchung vorzunehmen')
+    return
+  }
 
-  alert(`Buchungsanfrage für "${place.name}" wurde gesendet!\n\nGesamtpreis: ${calculatePlaceTotal(place.pricePerDay)}€ für ${numberOfDays.value} Tage`)
+  const booking = bookingStore.createBooking(userStore.currentUser!.id, place)
+
+  if (booking) {
+    alert(`Buchungsanfrage für "${place.name}" wurde gesendet!\n\nGesamtpreis: ${booking.totalPrice}€ für ${booking.numberOfDays} Tage\n\nBuchungs-ID: ${booking.id}`)
+  }
 }
 </script>
 

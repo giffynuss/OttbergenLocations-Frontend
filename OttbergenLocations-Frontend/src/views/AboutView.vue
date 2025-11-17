@@ -7,7 +7,7 @@
           Über uns
         </h1>
         <p class="text-xl text-booking-gray-brown max-w-3xl mx-auto">
-          OISS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
+          IOSS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
         </p>
       </div>
 

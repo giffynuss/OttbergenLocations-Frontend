@@ -18,7 +18,7 @@
               Jetzt suchen
             </router-link>
             <router-link
-              v-if="!isAuthenticated"
+              v-if="!userStore.isAuthenticated"
               to="/register"
               class="bg-booking-medium-brown text-white px-8 py-3 rounded-lg font-semibold hover:bg-booking-dark-brown border-2 border-white transition-colors duration-300"
             >
@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/userStore'
 
-const { isAuthenticated } = useAuth()
+const userStore = useUserStore()
 </script>
