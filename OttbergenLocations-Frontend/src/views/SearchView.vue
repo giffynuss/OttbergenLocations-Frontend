@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-booking-very-light">
     <!-- Suchleiste oben -->
-    <div class="bg-white shadow-md sticky top-0 z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col md:flex-row gap-4">
+    <div class="bg-white shadow-md sticky top-0 z-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div class="flex flex-col gap-3 sm:gap-4">
           <!-- Suchfeld -->
           <div class="flex-1">
             <div class="relative">
@@ -20,41 +20,80 @@
             </div>
           </div>
 
-          <!-- Datumswähler -->
-          <div class="flex gap-4">
-            <div>
+          <!-- Datumswähler und Suchen Button in einer Reihe -->
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div class="flex gap-3 flex-1">
               <input
                 v-model="checkInDate"
                 type="date"
-                class="px-4 py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black"
+                class="flex-1 px-3 py-2 sm:px-4 sm:py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black text-sm sm:text-base transition-all duration-300 hover:border-booking-medium-brown"
                 @change="calculateTotalPrice"
               />
-            </div>
-            <div>
               <input
                 v-model="checkOutDate"
                 type="date"
-                class="px-4 py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black"
+                class="flex-1 px-3 py-2 sm:px-4 sm:py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black text-sm sm:text-base transition-all duration-300 hover:border-booking-medium-brown"
                 @change="calculateTotalPrice"
               />
             </div>
+
+            <!-- Such-Button -->
+            <button
+              @click="performSearch"
+              class="px-6 py-2 sm:py-3 bg-booking-dark-brown text-white rounded-lg hover:bg-booking-medium-brown transition-all duration-300 font-medium transform hover:scale-105 active:scale-95"
+            >
+              Suchen
+            </button>
           </div>
 
-          <!-- Such-Button -->
-          <button
-            @click="performSearch"
-            class="px-6 py-3 bg-booking-dark-brown text-white rounded-lg hover:bg-booking-medium-brown transition-colors duration-300 font-medium"
-          >
-            Suchen
-          </button>
+          <!-- Mobile Toggle Buttons -->
+          <div class="flex lg:hidden gap-2">
+            <button
+              @click="mobileView = 'list'"
+              :class="[
+                'flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300',
+                mobileView === 'list'
+                  ? 'bg-booking-dark-brown text-white'
+                  : 'bg-booking-beige text-booking-dark-brown hover:bg-booking-light-beige'
+              ]"
+            >
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                Liste
+              </span>
+            </button>
+            <button
+              @click="mobileView = 'map'"
+              :class="[
+                'flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300',
+                mobileView === 'map'
+                  ? 'bg-booking-dark-brown text-white'
+                  : 'bg-booking-beige text-booking-dark-brown hover:bg-booking-light-beige'
+              ]"
+            >
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                </svg>
+                Karte
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Split-Screen Layout -->
-    <div class="flex flex-col lg:flex-row h-[calc(100vh-100px)]">
+    <div class="flex flex-col lg:flex-row h-[calc(100vh-180px)] lg:h-[calc(100vh-100px)]">
       <!-- Linke Seite: Suchergebnisse -->
-      <div class="lg:w-1/2 overflow-y-auto p-6">
+      <div
+        :class="[
+          'lg:w-1/2 overflow-y-auto p-4 sm:p-6 custom-scrollbar',
+          mobileView === 'list' ? 'block' : 'hidden lg:block'
+        ]"
+      >
         <div class="max-w-2xl mx-auto">
           <h2 class="text-2xl font-bold text-booking-dark-brown mb-6">
             {{ searchResults.length }} Ergebnisse gefunden
@@ -64,9 +103,9 @@
             <div
               v-for="place in searchResults"
               :key="place.id"
-              class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer animate-fade-in transform hover:scale-[1.02]"
               @click="selectedPlace = place"
-              :class="{ 'ring-2 ring-booking-medium-brown': selectedPlace?.id === place.id }"
+              :class="{ 'ring-4 ring-booking-medium-brown': selectedPlace?.id === place.id }"
             >
               <!-- Bild Placeholder -->
               <div class="h-48 bg-gradient-to-br from-booking-beige to-booking-light-beige flex items-center justify-center">
@@ -118,7 +157,7 @@
                 <!-- Buchen Button -->
                 <button
                   @click.stop="bookPlace(place)"
-                  class="w-full mt-4 bg-booking-dark-brown text-white px-6 py-2 rounded-lg hover:bg-booking-medium-brown transition-colors duration-300 font-medium"
+                  class="w-full mt-4 bg-booking-dark-brown text-white px-6 py-2 rounded-lg hover:bg-booking-medium-brown transition-all duration-300 font-medium transform hover:scale-105 active:scale-95"
                 >
                   Jetzt buchen
                 </button>
@@ -139,7 +178,12 @@
       </div>
 
       <!-- Rechte Seite: Karte -->
-      <div class="lg:w-1/2 bg-booking-beige relative">
+      <div
+        :class="[
+          'lg:w-1/2 bg-booking-beige relative',
+          mobileView === 'map' ? 'block' : 'hidden lg:block'
+        ]"
+      >
         <div class="sticky top-24 h-[calc(100vh-120px)]">
           <!-- Karten-Placeholder -->
           <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-booking-light-beige to-booking-beige">
@@ -164,13 +208,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBookingStore } from '../stores/bookingStore'
 import { useUserStore } from '../stores/userStore'
 
 const bookingStore = useBookingStore()
 const userStore = useUserStore()
+
+// Mobile View State (Liste oder Karte)
+const mobileView = ref<'list' | 'map'>('list')
 
 // Reactive state aus Store
 const {
