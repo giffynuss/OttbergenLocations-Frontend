@@ -22,7 +22,7 @@
     <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <!-- Subtitle / Organization Name -->
       <p class="text-white text-sm sm:text-base md:text-lg font-medium tracking-widest mb-6 uppercase opacity-90">
-        OISS IT GMBH — BOOK A PLACE KULTURGEMEINSCHAFT OTTBERGEN E.V.
+        IOSS IT GMBH — BOOK A PLACE KULTURGEMEINSCHAFT OTTBERGEN E.V.
       </p>
 
       <!-- Main Heading -->

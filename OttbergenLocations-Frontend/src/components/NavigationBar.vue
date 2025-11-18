@@ -29,7 +29,7 @@
           </router-link>
 
           <!-- Nicht angemeldet -->
-          <template v-if="!isAuthenticated">
+          <template v-if="!userStore.isAuthenticated">
             <router-link
               to="/login"
               class="px-4 py-2 rounded-md text-sm font-medium text-booking-dark-brown bg-booking-beige hover:bg-booking-light-beige transition-colors duration-300"
@@ -50,7 +50,7 @@
             <div class="flex items-center space-x-3 ml-4 pl-4 border-l border-booking-medium-brown">
               <!-- E-Mail -->
               <span class="text-booking-very-light text-sm font-medium">
-                {{ currentUser?.email }}
+                {{ userStore.currentUser?.email }}
               </span>
 
               <!-- Profilbild-Icon -->
@@ -117,7 +117,7 @@
           Orte einstellen
         </router-link>
 
-        <template v-if="!isAuthenticated">
+        <template v-if="!userStore.isAuthenticated">
           <router-link
             to="/login"
             @click="mobileMenuOpen = false"
@@ -144,7 +144,7 @@
                 </svg>
               </div>
               <span class="text-booking-very-light text-sm font-medium">
-                {{ currentUser?.email }}
+                {{ userStore.currentUser?.email }}
               </span>
             </div>
 
@@ -163,18 +163,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/userStore'
 
-const { isAuthenticated, currentUser, logout, checkAuth } = useAuth()
+const userStore = useUserStore()
 const mobileMenuOpen = ref(false)
 
 // Beim Start der Komponente Auth-Status prüfen
 onMounted(() => {
-  checkAuth()
+  userStore.checkAuth()
 })
 
 const handleLogout = () => {
-  logout()
+  userStore.logout()
   mobileMenuOpen.value = false
   // Zur Startseite navigieren nach Logout
   window.location.href = '/'

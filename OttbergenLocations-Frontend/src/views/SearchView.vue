@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-booking-very-light">
     <!-- Suchleiste oben -->
-    <div class="bg-white shadow-md sticky top-0 z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col md:flex-row gap-4">
+    <div class="bg-white shadow-md sticky top-0 z-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div class="flex flex-col gap-3 sm:gap-4">
           <!-- Suchfeld -->
           <div class="flex-1">
             <div class="relative">
@@ -20,41 +20,80 @@
             </div>
           </div>
 
-          <!-- Datumswähler -->
-          <div class="flex gap-4">
-            <div>
+          <!-- Datumswähler und Suchen Button in einer Reihe -->
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div class="flex gap-3 flex-1">
               <input
                 v-model="checkInDate"
                 type="date"
-                class="px-4 py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black"
+                class="flex-1 px-3 py-2 sm:px-4 sm:py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black text-sm sm:text-base transition-all duration-300 hover:border-booking-medium-brown"
                 @change="calculateTotalPrice"
               />
-            </div>
-            <div>
               <input
                 v-model="checkOutDate"
                 type="date"
-                class="px-4 py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black"
+                class="flex-1 px-3 py-2 sm:px-4 sm:py-3 border border-booking-beige rounded-lg focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-booking-black text-sm sm:text-base transition-all duration-300 hover:border-booking-medium-brown"
                 @change="calculateTotalPrice"
               />
             </div>
+
+            <!-- Such-Button -->
+            <button
+              @click="performSearch"
+              class="px-6 py-2 sm:py-3 bg-booking-dark-brown text-white rounded-lg hover:bg-booking-medium-brown transition-all duration-300 font-medium transform hover:scale-105 active:scale-95"
+            >
+              Suchen
+            </button>
           </div>
 
-          <!-- Such-Button -->
-          <button
-            @click="performSearch"
-            class="px-6 py-3 bg-booking-dark-brown text-white rounded-lg hover:bg-booking-medium-brown transition-colors duration-300 font-medium"
-          >
-            Suchen
-          </button>
+          <!-- Mobile Toggle Buttons -->
+          <div class="flex lg:hidden gap-2">
+            <button
+              @click="mobileView = 'list'"
+              :class="[
+                'flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300',
+                mobileView === 'list'
+                  ? 'bg-booking-dark-brown text-white'
+                  : 'bg-booking-beige text-booking-dark-brown hover:bg-booking-light-beige'
+              ]"
+            >
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                Liste
+              </span>
+            </button>
+            <button
+              @click="mobileView = 'map'"
+              :class="[
+                'flex-1 py-2 px-4 rounded-lg font-medium transition-all duration-300',
+                mobileView === 'map'
+                  ? 'bg-booking-dark-brown text-white'
+                  : 'bg-booking-beige text-booking-dark-brown hover:bg-booking-light-beige'
+              ]"
+            >
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                </svg>
+                Karte
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Split-Screen Layout -->
-    <div class="flex flex-col lg:flex-row h-[calc(100vh-100px)]">
+    <div class="flex flex-col lg:flex-row h-[calc(100vh-180px)] lg:h-[calc(100vh-100px)]">
       <!-- Linke Seite: Suchergebnisse -->
-      <div class="lg:w-1/2 overflow-y-auto p-6">
+      <div
+        :class="[
+          'lg:w-1/2 overflow-y-auto p-4 sm:p-6 custom-scrollbar',
+          mobileView === 'list' ? 'block' : 'hidden lg:block'
+        ]"
+      >
         <div class="max-w-2xl mx-auto">
           <h2 class="text-2xl font-bold text-booking-dark-brown mb-6">
             {{ searchResults.length }} Ergebnisse gefunden
@@ -64,9 +103,9 @@
             <div
               v-for="place in searchResults"
               :key="place.id"
-              class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer animate-fade-in transform hover:scale-[1.02]"
               @click="selectedPlace = place"
-              :class="{ 'ring-2 ring-booking-medium-brown': selectedPlace?.id === place.id }"
+              :class="{ 'ring-4 ring-booking-medium-brown': selectedPlace?.id === place.id }"
             >
               <!-- Bild Placeholder -->
               <div class="h-48 bg-gradient-to-br from-booking-beige to-booking-light-beige flex items-center justify-center">
@@ -118,7 +157,7 @@
                 <!-- Buchen Button -->
                 <button
                   @click.stop="bookPlace(place)"
-                  class="w-full mt-4 bg-booking-dark-brown text-white px-6 py-2 rounded-lg hover:bg-booking-medium-brown transition-colors duration-300 font-medium"
+                  class="w-full mt-4 bg-booking-dark-brown text-white px-6 py-2 rounded-lg hover:bg-booking-medium-brown transition-all duration-300 font-medium transform hover:scale-105 active:scale-95"
                 >
                   Jetzt buchen
                 </button>
@@ -139,7 +178,12 @@
       </div>
 
       <!-- Rechte Seite: Karte -->
-      <div class="lg:w-1/2 bg-booking-beige relative">
+      <div
+        :class="[
+          'lg:w-1/2 bg-booking-beige relative',
+          mobileView === 'map' ? 'block' : 'hidden lg:block'
+        ]"
+      >
         <div class="sticky top-24 h-[calc(100vh-120px)]">
           <!-- Karten-Placeholder -->
           <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-booking-light-beige to-booking-beige">
@@ -164,123 +208,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useBookingStore } from '../stores/bookingStore'
+import { useUserStore } from '../stores/userStore'
 
-interface Place {
-  id: number
-  name: string
-  description: string
-  location: string
-  capacity: number
-  pricePerDay: number
-  latitude?: number
-  longitude?: number
-}
+const bookingStore = useBookingStore()
+const userStore = useUserStore()
 
-// Suchformular
-const searchQuery = ref('')
-const checkInDate = ref('')
-const checkOutDate = ref('')
+// Mobile View State (Liste oder Karte)
+const mobileView = ref<'list' | 'map'>('list')
 
-// Mock-Daten für 4 Beispiel-Orte
-const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: 'Kulturraum Ottbergen',
-    description: 'Ein wunderschöner Veranstaltungsraum im Herzen von Ottbergen. Perfekt für Hochzeiten, Firmenfeiern und kulturelle Events. Mit moderner Ausstattung und historischem Charme.',
-    location: 'Ottbergen',
-    capacity: 100,
-    pricePerDay: 250
-  },
-  {
-    id: 2,
-    name: 'Gemeindesaal St. Marien',
-    description: 'Heller und freundlicher Saal mit Bühne und Nebenräumen. Ideal für Familienfeiern, Konzerte und Workshops. Küche und Sanitäranlagen vorhanden.',
-    location: 'Ottbergen Nord',
-    capacity: 60,
-    pricePerDay: 150
-  },
-  {
-    id: 3,
-    name: 'Dorfgemeinschaftshaus',
-    description: 'Traditionelles Gemeinschaftshaus mit rustikalem Charme. Bietet Platz für kleinere Veranstaltungen und Treffen. Voll ausgestattete Küche inklusive.',
-    location: 'Ottbergen Süd',
-    capacity: 40,
-    pricePerDay: 120
-  },
-  {
-    id: 4,
-    name: 'Scheune am Waldrand',
-    description: 'Umgebaute historische Scheune mit besonderem Ambiente. Perfekt für rustikale Hochzeiten und Gartenpartys. Große Außenfläche mit Gartenmöbeln verfügbar.',
-    location: 'Ottbergen West',
-    capacity: 80,
-    pricePerDay: 300
-  }
-]
-
-const searchResults = ref<Place[]>([...mockPlaces])
-const selectedPlace = ref<Place | null>(null)
-
-// Berechnung der Anzahl der Tage
-const numberOfDays = computed(() => {
-  if (!checkInDate.value || !checkOutDate.value) return 0
-
-  const checkIn = new Date(checkInDate.value)
-  const checkOut = new Date(checkOutDate.value)
-  const diffTime = checkOut.getTime() - checkIn.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-  return diffDays > 0 ? diffDays : 0
-})
+// Reactive state aus Store
+const {
+  searchResults,
+  selectedPlace,
+  searchQuery,
+  checkInDate,
+  checkOutDate,
+  numberOfDays
+} = storeToRefs(bookingStore)
 
 // Gesamtpreis für einen Ort berechnen
 const calculatePlaceTotal = (pricePerDay: number) => {
-  return pricePerDay * numberOfDays.value
+  return bookingStore.calculatePlaceTotal(pricePerDay)
 }
 
 // Gesamtpreis berechnen (wenn Daten sich ändern)
 const calculateTotalPrice = () => {
-  // Logik für Preisberechnung wird hier ausgeführt
   console.log('Tage:', numberOfDays.value)
 }
 
 // Suche durchführen
 const performSearch = () => {
-  if (!searchQuery.value.trim()) {
-    searchResults.value = [...mockPlaces]
-    return
-  }
-
-  searchResults.value = mockPlaces.filter(place =>
-    place.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-
-  console.log('=== SUCHE DURCHGEFÜHRT ===')
-  console.log('Suchbegriff:', searchQuery.value)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Anzahl Ergebnisse:', searchResults.value.length)
-  console.log('=========================')
+  bookingStore.performSearch()
 }
 
 // Ort buchen
-const bookPlace = (place: Place) => {
+const bookPlace = (place: any) => {
   if (!checkInDate.value || !checkOutDate.value) {
     alert('Bitte wählen Sie Check-in und Check-out Datum')
     return
   }
 
-  console.log('=== BUCHUNG ===')
-  console.log('Ort:', place.name)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Tage:', numberOfDays.value)
-  console.log('Gesamtpreis:', calculatePlaceTotal(place.pricePerDay), '€')
-  console.log('===============')
+  if (!userStore.isAuthenticated) {
+    alert('Bitte melden Sie sich an, um eine Buchung vorzunehmen')
+    return
+  }
 
-  alert(`Buchungsanfrage für "${place.name}" wurde gesendet!\n\nGesamtpreis: ${calculatePlaceTotal(place.pricePerDay)}€ für ${numberOfDays.value} Tage`)
+  const booking = bookingStore.createBooking(userStore.currentUser!.id, place)
+
+  if (booking) {
+    alert(`Buchungsanfrage für "${place.name}" wurde gesendet!\n\nGesamtpreis: ${booking.totalPrice}€ für ${booking.numberOfDays} Tage\n\nBuchungs-ID: ${booking.id}`)
+  }
 }
 </script>
 

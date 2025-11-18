@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '../stores/userStore'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -64,13 +65,13 @@ const router = createRouter({
 })
 
 // Navigation Guard für geschützte Routen
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
+router.beforeEach((to, _from, next) => {
+  const userStore = useUserStore()
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
     // Weiterleitung zur Login-Seite wenn nicht authentifiziert
     next({ name: 'login', query: { redirect: to.fullPath } })
-  } else if ((to.name === 'login' || to.name === 'register') && isAuthenticated) {
+  } else if ((to.name === 'login' || to.name === 'register') && userStore.isAuthenticated) {
     // Weiterleitung zur Home-Seite wenn bereits eingeloggt
     next({ name: 'home' })
   } else {

@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-booking-light-beige">
-    <div class="max-w-md w-full">
+  <div class="min-h-screen flex items-center justify-center py-8 px-4 sm:py-12 sm:px-6 lg:px-8 bg-booking-light-beige">
+    <div class="max-w-md w-full animate-fade-in">
       <!-- Überschrift -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-booking-dark-brown">
+      <div class="text-center mb-6 sm:mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-booking-dark-brown">
           Anmeldung
         </h1>
       </div>
@@ -20,7 +20,7 @@
             v-model="formData.email"
             type="email"
             required
-            class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown focus:border-booking-medium-brown text-black"
+            class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown focus:border-booking-medium-brown text-black transition-all duration-300 hover:border-booking-medium-brown"
             placeholder="ihre@email.de"
             @blur="validateEmail"
           />
@@ -39,7 +39,7 @@
             v-model="formData.password"
             type="password"
             required
-            class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown focus:border-booking-medium-brown text-black"
+            class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown focus:border-booking-medium-brown text-black transition-all duration-300 hover:border-booking-medium-brown"
             placeholder="Ihr Passwort"
             @blur="validatePassword"
           />
@@ -89,10 +89,17 @@
         <div>
           <button
             type="submit"
-            :disabled="!isFormValid"
-            class="w-full py-3 px-4 text-white bg-booking-dark-brown hover:bg-booking-medium-brown disabled:bg-booking-gray-brown disabled:cursor-not-allowed rounded-md font-semibold transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-booking-medium-brown"
+            :disabled="!isFormValid || isLoading"
+            class="w-full py-3 px-4 text-white bg-booking-dark-brown hover:bg-booking-medium-brown disabled:bg-booking-gray-brown disabled:cursor-not-allowed rounded-md font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-booking-medium-brown transform hover:scale-105 active:scale-95"
           >
-            Anmelden
+            <span v-if="!isLoading">Anmelden</span>
+            <span v-else class="flex items-center justify-center">
+              <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Anmeldung...
+            </span>
           </button>
         </div>
 
@@ -114,11 +121,11 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/userStore'
 
 const router = useRouter()
 const route = useRoute()
-const { login } = useAuth()
+const userStore = useUserStore()
 
 // Form Data
 const formData = reactive({
@@ -134,6 +141,7 @@ const errors = reactive({
 })
 
 const generalError = ref('')
+const isLoading = ref(false)
 
 // Email Validation
 const validateEmail = () => {
@@ -174,8 +182,9 @@ const isFormValid = computed(() => {
 })
 
 // Handle Login
-const handleLogin = () => {
+const handleLogin = async () => {
   generalError.value = ''
+  isLoading.value = true
 
   // Validate all fields
   const isEmailValid = validateEmail()
@@ -183,11 +192,13 @@ const handleLogin = () => {
 
   if (!isEmailValid || !isPasswordValid) {
     generalError.value = 'Bitte korrigieren Sie die Fehler im Formular'
+    isLoading.value = false
     return
   }
 
   if (!formData.recaptcha) {
     generalError.value = 'Bitte bestätigen Sie, dass Sie kein Roboter sind'
+    isLoading.value = false
     return
   }
 
@@ -199,13 +210,17 @@ const handleLogin = () => {
   console.log('Timestamp:', new Date().toISOString())
   console.log('=========================')
 
+  // Simuliere API-Anfrage mit Delay
+  await new Promise(resolve => setTimeout(resolve, 800))
+
   // Attempt login
-  if (login(formData.email, formData.password)) {
+  if (userStore.login(formData.email, formData.password)) {
     // Weiterleitung zur ursprünglich angeforderten Seite oder Startseite
     const redirect = route.query.redirect as string || '/'
     router.push(redirect)
   } else {
     generalError.value = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.'
+    isLoading.value = false
   }
 }
 </script>
