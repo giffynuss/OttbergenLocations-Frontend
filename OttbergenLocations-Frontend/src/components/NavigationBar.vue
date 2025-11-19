@@ -165,12 +165,12 @@
 import { ref, onMounted } from 'vue'
 import { useAuth } from '../composables/useAuth'
 
-const { isAuthenticated, currentUser, logout, checkAuth } = useAuth()
+const { isAuthenticated, currentUser, logout, fetchUser } = useAuth()
 const mobileMenuOpen = ref(false)
 
 // Beim Start der Komponente Auth-Status prüfen
 onMounted(() => {
-  checkAuth()
+  fetchUser()
 })
 
 const handleLogout = () => {

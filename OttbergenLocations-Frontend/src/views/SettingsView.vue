@@ -348,7 +348,7 @@ const formData = reactive({
   firstName: 'Max',
   lastName: 'Mustermann',
   gender: 'herr',
-  email: currentUser.value?.email || 'max.mustermann@example.com',
+  email: 'max.mustermann@example.com',
   phone: '+49 151 12345678',
   street: 'Hauptstraße',
   houseNumber: '42',

@@ -198,13 +198,13 @@ const handleLogin = async () => {
   }
 
   // Login beim Backend durchführen
-  const success = await login(formData.email, formData.password)
+  const result = await login(formData.email, formData.password)
 
-  if (success) {
+  if (result.success) {
     const redirect = (route.query.redirect as string) || '/'
-    router.push(redirect)
+    router.push(redirect);
   } else {
-    generalError.value = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.'
+    generalError.value = result.message;
   }
 }
 </script>

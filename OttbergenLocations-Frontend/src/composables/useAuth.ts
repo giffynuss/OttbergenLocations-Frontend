@@ -1,6 +1,18 @@
 import { ref } from 'vue'
 
-const user = ref(null);
+interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  street: string;
+  houseNumber: string | number;
+  zipCode: string | number;
+  city: string;
+  isProvider: boolean;
+}
+
+const currentUser = ref<User | null>(null);
 const isAuthenticated = ref<boolean>(false)
 
 export function useAuth() {
@@ -18,13 +30,21 @@ export function useAuth() {
     // Nach erfolgreichem Login Benutzer laden
     if (data.success) {
       await fetchUser();
-      return true;
+      return {success: true};
     }
 
-    return false;
+    return {success: false, message: data.message || "Unbekannter Fehler"};
   };
 
   const fetchUser = async () => {
+    const storedUser = localStorage.getItem("currentUser");
+    const storedAuth = localStorage.getItem("isAuthenticated");
+
+    if (storedUser && storedAuth === "true") {
+      currentUser.value = JSON.parse(storedUser);
+      isAuthenticated.value = true;
+    }
+
     const res = await fetch("http://localhost/OttbergenLocations-Backend/me.php", {
       method: "GET",
       credentials: "include",
@@ -33,11 +53,17 @@ export function useAuth() {
     const data = await res.json();
 
     if (data.success) {
-      user.value = data.user;
+      currentUser.value = data.user;
       isAuthenticated.value = true;
+
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+      localStorage.setItem("isAuthenticated", "true");
     } else {
-      user.value = null;
+      currentUser.value = null;
       isAuthenticated.value = false;
+
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isAuthenticated");
     }
   };
 
@@ -47,22 +73,32 @@ export function useAuth() {
       credentials: "include"
     });
 
-    user.value = null;
+    currentUser.value = null;
     isAuthenticated.value = false;
   };
 
-  const register = (name: string, email: string, password: string) => {
-    
-  }
+  const register = async (formData: any) => {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/register.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+      credentials: "include"
+    });
 
-  const checkAuth = () => {
+    const data = await res.json();
 
+    if (data.success) {
+      return { success: true };
+    }
+
+    return { success: false, message: data.message };
   }
 
   return {
-    user,
+    currentUser,
     isAuthenticated,
     login,
+    register,
     fetchUser,
     logout
   }
