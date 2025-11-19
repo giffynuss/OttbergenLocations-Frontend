@@ -2,20 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap');
+
 :root {
-  /* Booking Platform Color Palette */
-  --color-dark-brown: #69443c;
-  --color-medium-brown: #835e53;
-  --color-gray-brown: #aca399;
-  --color-beige: #c7beb4;
-  --color-light-beige: #dedad4;
-  --color-very-light: #faf7f7;
-  --color-black: #000000;
+  /* Luxuriöses bräunlich-creme Farbschema */
+  --color-luxury-dark: #3d2817;
+  --color-luxury-brown: #5c442f;
+  --color-luxury-medium: #8b6f47;
+  --color-luxury-tan: #a68a64;
+  --color-luxury-cream: #d4c4b0;
+  --color-luxury-light: #e8dfd5;
+  --color-luxury-ivory: #f5f0e8;
+  --color-luxury-gold: #b8946f;
+  --color-luxury-accent: #947454;
 }
 
 @layer base {
+  * {
+    /* Spitze Ecken als Standard - keine Rundungen */
+    border-radius: 0;
+  }
+
   body {
-    @apply bg-booking-very-light text-booking-black;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    @apply bg-luxury-ivory text-luxury-dark;
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+  /* Luxuriöse Button-Stile mit spitzen Ecken */
+  .btn-luxury-primary {
+    @apply px-8 py-3 bg-luxury-dark text-luxury-ivory font-medium tracking-luxury;
+    @apply transition-all duration-300 transform hover:bg-luxury-brown hover:scale-105;
+    @apply shadow-luxury hover:shadow-luxury-lg;
+    border: 1px solid var(--color-luxury-dark);
+  }
+
+  .btn-luxury-secondary {
+    @apply px-8 py-3 bg-transparent text-luxury-dark font-medium tracking-luxury;
+    @apply border-2 border-luxury-dark transition-all duration-300;
+    @apply hover:bg-luxury-dark hover:text-luxury-ivory;
+  }
+
+  /* Luxuriöse Card-Stile */
+  .card-luxury {
+    @apply bg-white shadow-luxury-md border border-luxury-light;
+    @apply transition-all duration-300 hover:shadow-luxury-xl;
+  }
+
+  /* Luxuriöse Input-Stile mit spitzen Ecken */
+  .input-luxury {
+    @apply w-full px-4 py-3 bg-white border-2 border-luxury-medium;
+    @apply focus:outline-none focus:border-luxury-dark;
+    @apply text-luxury-dark placeholder-luxury-tan;
+    @apply transition-all duration-300;
   }
 }

@@ -4,8 +4,11 @@ import NavigationBar from './components/NavigationBar.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-booking-very-light">
+  <div class="min-h-screen bg-luxury-ivory">
     <NavigationBar />
-    <RouterView />
+    <!-- Padding-top um Platz für die fixierte Navigation zu schaffen -->
+    <div class="pt-20">
+      <RouterView />
+    </div>
   </div>
 </template>
