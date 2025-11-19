@@ -14,7 +14,7 @@
           Über uns
         </h1>
         <p class="text-xl text-luxury-brown max-w-3xl mx-auto tracking-luxury font-light">
-          OISS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
+          IOSS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
         </p>
       </div>
 

@@ -32,7 +32,7 @@
 
       <!-- Subtitle / Organization Name -->
       <p class="text-luxury-cream text-xs sm:text-sm md:text-base font-light tracking-luxury-wide mb-8 uppercase">
-        OISS IT GMBH — KULTURGEMEINSCHAFT OTTBERGEN E.V.
+        IOSS IT GMBH — KULTURGEMEINSCHAFT OTTBERGEN E.V.
       </p>
 
       <!-- Main Heading -->
@@ -105,7 +105,7 @@
           Über uns
         </h2>
         <p class="text-xl text-luxury-brown max-w-3xl mx-auto tracking-luxury font-light">
-          OISS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
+          IOSS IT GmbH & Kulturgemeinschaft Ottbergen e.V.
         </p>
       </div>
 

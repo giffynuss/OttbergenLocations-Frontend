@@ -358,7 +358,7 @@ OttbergenLocations-Frontend/
 ## Kontakt & Support
 
 Bei Fragen oder Anmerkungen zum Design:
-- OISS IT GmbH
+- IOSS IT GmbH
 - Kulturgemeinschaft Ottbergen e.V.
 
 ---
