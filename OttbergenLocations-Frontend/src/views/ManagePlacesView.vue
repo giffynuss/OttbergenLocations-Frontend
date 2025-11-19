@@ -42,6 +42,18 @@
             <!-- Dekoratives Muster im Hintergrund -->
             <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%); background-size: 30px 30px; color: var(--color-luxury-dark);"></div>
 
+            <!-- Status Badge - Oben rechts -->
+            <div class="absolute top-4 right-4 z-20">
+              <span
+                class="px-3 py-1.5 text-xs font-medium border shadow-lg"
+                :class="place.active
+                  ? 'bg-luxury-ivory/95 text-green-700 border-green-500'
+                  : 'bg-luxury-ivory/95 text-red-700 border-red-500'"
+              >
+                {{ place.active ? 'Aktiv' : 'Inaktiv' }}
+              </span>
+            </div>
+
             <!-- Hintergrund Icon -->
             <svg class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 text-luxury-dark opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -52,19 +64,10 @@
 
             <!-- Text über dem Bild -->
             <div class="absolute inset-0 p-6 flex flex-col justify-end z-10">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="font-luxury text-2xl font-bold text-luxury-ivory tracking-luxury drop-shadow-lg">
-                  {{ place.title }}
-                </h3>
-                <span
-                  class="px-3 py-1 text-xs font-medium border"
-                  :class="place.active
-                    ? 'bg-luxury-ivory/90 text-green-700 border-green-500'
-                    : 'bg-luxury-ivory/90 text-red-700 border-red-500'"
-                >
-                  {{ place.active ? 'Aktiv' : 'Inaktiv' }}
-                </span>
-              </div>
+              <!-- Titel -->
+              <h3 class="font-luxury text-2xl font-bold text-luxury-ivory tracking-luxury drop-shadow-lg mb-3">
+                {{ place.title }}
+              </h3>
 
               <!-- Details -->
               <div class="flex flex-wrap items-center gap-3 text-sm">
