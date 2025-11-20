@@ -39,6 +39,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/location/:id',
+    name: 'location-detail',
+    component: () => import('../views/LocationDetailView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/manage-places',
     name: 'manage-places',
     component: () => import('../views/ManagePlacesView.vue'),

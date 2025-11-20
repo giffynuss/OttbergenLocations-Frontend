@@ -189,6 +189,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 interface Place {
   id: number
@@ -296,15 +299,15 @@ const bookPlace = (place: Place) => {
     return
   }
 
-  console.log('=== BUCHUNG ===')
-  console.log('Ort:', place.name)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Tage:', numberOfDays.value)
-  console.log('Gesamtpreis:', calculatePlaceTotal(place.pricePerDay), '€')
-  console.log('===============')
-
-  alert(`Buchungsanfrage für "${place.name}" wurde gesendet!\n\nGesamtpreis: ${calculatePlaceTotal(place.pricePerDay)}€ für ${numberOfDays.value} Tage`)
+  // Navigation zur Detail-Seite mit Datum-Parametern
+  router.push({
+    name: 'location-detail',
+    params: { id: place.id.toString() },
+    query: {
+      checkIn: checkInDate.value,
+      checkOut: checkOutDate.value
+    }
+  })
 }
 </script>
 
