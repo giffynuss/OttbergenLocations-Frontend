@@ -9,7 +9,7 @@ export interface Place {
   pricePerDay: number
 
   // Optionale Felder (für erweiterte Informationen)
-  images?: string[]
+  images?: string[] // Array von URL-Strings (vereinfacht)
   latitude?: number
   longitude?: number
   address?: string
@@ -17,29 +17,27 @@ export interface Place {
   features?: PlaceFeature[]
   availableDates?: DateRange[]
 
-  // Anbieter-Informationen
+  // Anbieter-Informationen (vereinfacht)
   provider?: Provider
 
   // Status
   active?: boolean
-  createdAt?: string
-  updatedAt?: string
+  // ENTFERNT: createdAt, updatedAt (nicht mehr vom Backend geliefert)
 }
 
 export interface PlaceFeature {
   id: number
   name: string
-  icon?: string
-  available: boolean
+  category?: string // z.B. "basic", "parking", "kitchen"
+  // ENTFERNT: icon, available (Backend sendet nur vorhandene Features)
 }
 
 export interface Provider {
   id: number
   name: string
-  email: string
-  phone?: string
-  memberSince?: string
-  avatar?: string
+  email?: string // Nur in Detail-Ansichten verfügbar
+  phone?: string // Nur in Detail-Ansichten verfügbar
+  // ENTFERNT: memberSince, avatar, verified (Backend-Vereinfachung)
 }
 
 export interface DateRange {
@@ -52,17 +50,16 @@ export interface Booking {
   placeId: number
   placeName: string
   placeLocation: string
-  userId: number
-  checkIn: string      // Format: "DD.MM.YYYY" oder ISO
-  checkOut: string     // Format: "DD.MM.YYYY" oder ISO
+  userId?: number
+  checkIn: string      // Format: "YYYY-MM-DD" (ISO vom Backend)
+  checkOut: string     // Format: "YYYY-MM-DD" (ISO vom Backend)
   guests: number
-  totalPrice: number
-  subtotal?: number
-  serviceFee?: number
-  tax?: number
+  totalPrice: number   // Nur noch Gesamtpreis (Tage × Tagespreis)
+  // ENTFERNT: subtotal, serviceFee, tax (Backend-Vereinfachung)
   status: 'pending' | 'confirmed' | 'upcoming' | 'completed' | 'cancelled'
-  createdAt?: string
-  updatedAt?: string
+  cancelledAt?: string
+  cancellationReason?: string
+  // ENTFERNT: createdAt, updatedAt (nicht mehr vom Backend geliefert)
 }
 
 // Hilfsfunktionen für Datumsberechnung

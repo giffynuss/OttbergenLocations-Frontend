@@ -161,24 +161,23 @@
             <div class="space-y-4">
               <div class="flex items-start gap-4">
                 <div class="w-16 h-16 bg-luxury-medium flex items-center justify-center text-luxury-ivory font-luxury text-2xl font-bold">
-                  A
+                  {{ getProviderInitial() }}
                 </div>
-                <div>
-                  <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-1">Anbieter Name</h3>
-                  <p class="text-luxury-brown text-sm mb-3">Mitglied seit 2024</p>
+                <div class="flex-1">
+                  <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-3">{{ place?.provider?.name || 'Anbieter' }}</h3>
 
                   <div class="space-y-2">
-                    <div class="flex items-center gap-3 text-luxury-brown">
+                    <div v-if="place?.provider?.email" class="flex items-center gap-3 text-luxury-brown">
                       <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                       </svg>
-                      <span>anbieter@example.com</span>
+                      <span>{{ place.provider.email }}</span>
                     </div>
-                    <div class="flex items-center gap-3 text-luxury-brown">
+                    <div v-if="place?.provider?.phone" class="flex items-center gap-3 text-luxury-brown">
                       <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                       </svg>
-                      <span>+49 123 456789</span>
+                      <span>{{ place.provider.phone }}</span>
                     </div>
                   </div>
                 </div>
@@ -241,7 +240,6 @@
                   <span class="text-luxury-brown">Preis pro Tag</span>
                   <span class="font-luxury text-3xl font-bold text-luxury-dark tracking-luxury">{{ place?.pricePerDay }}€</span>
                 </div>
-                <p class="text-xs text-luxury-tan">zzgl. ggf. Servicegebühren</p>
               </div>
 
               <!-- Ausgewählte Daten -->
@@ -260,28 +258,13 @@
                 </div>
               </div>
 
-              <!-- Kostenaufschlüsselung -->
-              <div v-if="numberOfDays > 0" class="space-y-3 mb-6">
-                <div class="flex justify-between text-luxury-brown">
-                  <span>{{ place?.pricePerDay }}€ × {{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' : 'Tage' }}</span>
-                  <span class="font-medium">{{ subtotal }}€</span>
+              <!-- Vereinfachte Preisberechnung -->
+              <div v-if="numberOfDays > 0" class="mb-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
+                <div class="flex justify-between items-center text-luxury-brown mb-3">
+                  <span class="text-sm">{{ place?.pricePerDay }}€ × {{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' : 'Tage' }}</span>
+                  <span class="font-luxury text-2xl font-bold text-luxury-dark">{{ totalPrice }}€</span>
                 </div>
-                <div class="flex justify-between text-luxury-brown">
-                  <span>Servicegebühr</span>
-                  <span class="font-medium">{{ serviceFee }}€</span>
-                </div>
-                <div class="flex justify-between text-luxury-brown">
-                  <span>MwSt. (19%)</span>
-                  <span class="font-medium">{{ tax }}€</span>
-                </div>
-              </div>
-
-              <!-- Gesamtpreis -->
-              <div v-if="numberOfDays > 0" class="pt-6 border-t-2 border-luxury-gold mb-6">
-                <div class="flex justify-between items-baseline">
-                  <span class="font-luxury text-xl font-bold text-luxury-dark tracking-luxury">Gesamt</span>
-                  <span class="font-luxury text-3xl font-bold text-luxury-gold tracking-luxury">{{ totalPrice }}€</span>
-                </div>
+                <p class="text-xs text-luxury-tan">Gesamtpreis inkl. aller Gebühren</p>
               </div>
 
               <!-- Hinweis wenn keine Daten ausgewählt -->
@@ -330,17 +313,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-
-interface Place {
-  id: number
-  name: string
-  description: string
-  location: string
-  capacity: number
-  pricePerDay: number
-  latitude?: number
-  longitude?: number
-}
+import type { Place } from '@/types/place'
 
 const router = useRouter()
 const route = useRoute()
@@ -419,22 +392,11 @@ const numberOfDays = computed(() => {
   return diffDays > 0 ? diffDays : 0
 })
 
-// Kostenberechnung
-const subtotal = computed(() => {
+// Vereinfachte Kostenberechnung (Backend-Vereinfachung)
+// Nur noch: Tage × Tagespreis = Gesamtpreis
+const totalPrice = computed(() => {
   if (!place.value) return 0
   return place.value.pricePerDay * numberOfDays.value
-})
-
-const serviceFee = computed(() => {
-  return Math.round(subtotal.value * 0.05) // 5% Servicegebühr
-})
-
-const tax = computed(() => {
-  return Math.round((subtotal.value + serviceFee.value) * 0.19) // 19% MwSt
-})
-
-const totalPrice = computed(() => {
-  return subtotal.value + serviceFee.value + tax.value
 })
 
 // Funktionen
@@ -457,6 +419,11 @@ const goBack = () => {
   router.push('/search')
 }
 
+const getProviderInitial = () => {
+  if (!place.value?.provider?.name) return 'A'
+  return place.value.provider.name.charAt(0).toUpperCase()
+}
+
 const handleBooking = () => {
   if (!place.value || !checkInDate.value || !checkOutDate.value) {
     return
@@ -468,9 +435,6 @@ const handleBooking = () => {
   console.log('Check-in:', checkInDate.value)
   console.log('Check-out:', checkOutDate.value)
   console.log('Tage:', numberOfDays.value)
-  console.log('Zwischensumme:', subtotal.value, '€')
-  console.log('Servicegebühr:', serviceFee.value, '€')
-  console.log('MwSt:', tax.value, '€')
   console.log('Gesamtpreis:', totalPrice.value, '€')
   console.log('=====================')
 
