@@ -2,14 +2,15 @@ import { ref } from 'vue'
 
 interface User {
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
   phone: string;
   street: string;
-  houseNumber: string | number;
-  zipCode: string | number;
+  house_number: string;
+  zip_code: string;
   city: string;
-  isProvider: boolean;
+  is_provider: boolean;
 }
 
 const currentUser = ref<User | null>(null);
@@ -45,7 +46,7 @@ export function useAuth() {
       isAuthenticated.value = true;
     }
 
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/helpers/me.php", {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/user/me.php", {
       method: "GET",
       credentials: "include",
     });

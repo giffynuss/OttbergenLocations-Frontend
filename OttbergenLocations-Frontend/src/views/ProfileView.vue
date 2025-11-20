@@ -338,22 +338,25 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
+import { reactive, computed, ref, watch } from 'vue'
 import { useAuth } from '../composables/useAuth'
 
-const { currentUser } = useAuth()
+const { currentUser, fetchUser } = useAuth()
 
-// Mock-Daten für vorausgefülltes Formular
+// Beim Seitenaufruf User laden
+fetchUser();
+
+// Formulardaten
 const formData = reactive({
-  firstName: 'Max',
-  lastName: 'Mustermann',
-  gender: 'herr',
-  email: 'max.mustermann@example.com',
-  phone: '+49 151 12345678',
-  street: 'Hauptstraße',
-  houseNumber: '42',
-  zipCode: '37691',
-  city: 'Ottbergen'
+  firstName: '',
+  lastName: '',
+  gender: '',
+  email: '',
+  phone: '',
+  street: '',
+  houseNumber: '',
+  zipCode: '',
+  city: ''
 })
 
 // Passwort-Daten
@@ -383,6 +386,19 @@ const passwordErrors = reactive({
 const generalError = ref('')
 const successMessage = ref('')
 const showPasswordChange = ref(false)
+
+// Wenn User geladen ist: Formular füllen
+watch(currentUser, (user) => {
+  if (!user) return
+  formData.firstName = user.first_name
+  formData.lastName = user.last_name
+  formData.email = user.email
+  formData.phone = user.phone
+  formData.street = user.street
+  formData.houseNumber = user.house_number
+  formData.zipCode = user.zip_code
+  formData.city = user.city
+}, { immediate: true })
 
 // Validation Functions
 const validateField = (fieldName: string) => {
@@ -511,13 +527,6 @@ const savePasswordChange = () => {
     return
   }
 
-  // Console log for backend placeholder
-  console.log('=== PASSWORT ÄNDERN ===')
-  console.log('Aktuelles Passwort:', passwordData.current)
-  console.log('Neues Passwort:', passwordData.new)
-  console.log('Timestamp:', new Date().toISOString())
-  console.log('=======================')
-
   successMessage.value = 'Passwort wurde erfolgreich geändert'
   generalError.value = ''
   showPasswordChange.value = false
@@ -532,11 +541,11 @@ const savePasswordChange = () => {
 }
 
 // Handle Save
-const handleSave = () => {
+const handleSave = async () => {
   generalError.value = ''
   successMessage.value = ''
 
-  // Validate all fields
+  // Feldvalidierung
   Object.keys(errors).forEach(field => validateField(field))
 
   if (Object.values(errors).some(error => error !== '')) {
@@ -544,35 +553,25 @@ const handleSave = () => {
     return
   }
 
-  // Console log for backend placeholder
-  console.log('=== EINSTELLUNGEN SPEICHERN ===')
-  console.log('Stammdaten:')
-  console.log('  Vorname:', formData.firstName)
-  console.log('  Nachname:', formData.lastName)
-  console.log('  Anrede:', formData.gender)
-  console.log('  E-Mail:', formData.email)
-  console.log('  Telefon:', formData.phone)
-  console.log('Adresse:')
-  console.log('  Straße:', formData.street)
-  console.log('  Hausnummer:', formData.houseNumber)
-  console.log('  PLZ:', formData.zipCode)
-  console.log('  Ort:', formData.city)
-  console.log('Timestamp:', new Date().toISOString())
-  console.log('===============================')
+  const res = await fetch("http://localhost/OttbergenLocations-Backend/api/user/update.php", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(formData)
+  })
 
-  successMessage.value = 'Einstellungen wurden erfolgreich gespeichert'
+  const data = await res.json();
 
-  // Success message ausblenden nach 3 Sekunden
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
-}
+  if (!data.success) {
+    generalError.value = data.message
+    return
+  }
+
+  successMessage.value = "Daten erfolgreich gespeichert"
+
+  // User-Daten aktualisieren
+  await fetchUser()
+
+  setTimeout(() => successMessage.value = '', 3000)
+} 
 </script>
-
-<style scoped>
-/* Custom checkbox and radio styling */
-input[type="checkbox"],
-input[type="radio"] {
-  accent-color: var(--color-medium-brown);
-}
-</style>
