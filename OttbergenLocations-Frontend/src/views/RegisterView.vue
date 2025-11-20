@@ -251,10 +251,12 @@
 <script setup lang="ts">
 import { reactive, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
 const router = useRouter()
+const { register } = useAuth()
 
-// Form Data
+// Formulardaten
 const formData = reactive({
   firstName: '',
   lastName: '',
@@ -271,7 +273,7 @@ const formData = reactive({
   agbAccepted: false
 })
 
-// Validation Errors
+// Fehlertexte
 const errors = reactive({
   firstName: '',
   lastName: '',
@@ -287,7 +289,7 @@ const errors = reactive({
 
 const generalError = ref('')
 
-// Validation Functions
+// Validierungsfunktion
 const validateField = (fieldName: string) => {
   switch (fieldName) {
     case 'firstName':
@@ -373,7 +375,7 @@ const validateField = (fieldName: string) => {
   }
 }
 
-// Form Valid Computed
+// Gesamte Formularvalidierung
 const isFormValid = computed(() => {
   return formData.firstName &&
     formData.lastName &&
@@ -388,53 +390,42 @@ const isFormValid = computed(() => {
     formData.city &&
     formData.recaptcha &&
     formData.agbAccepted &&
-    !Object.values(errors).some(error => error !== '')
+    !Object.values(errors).some(e => e !== '')
 })
 
-// Handle Register
+// Registrierung absenden
 const handleRegister = async () => {
-  generalError.value = '';
+  generalError.value = ""
 
-  // Validierung ausführen
-  Object.keys(errors).forEach(field => validateField(field));
+  // 1) Alle Felder validieren
+  Object.keys(errors).forEach((field) => validateField(field))
 
-  if (Object.values(errors).some(error => error !== '')) {
-    generalError.value = 'Bitte korrigieren Sie die Fehler im Formular';
-    return;
+  // 2) Wenn Fehler → abbrechen
+  if (Object.values(errors).some(e => e !== '')) {
+    generalError.value = "Bitte korrigieren Sie die Fehler im Formular."
+    return
   }
 
-  try {
-    const response = await fetch("http://localhost/OttbergenLocations-Backend/register.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
-        street: formData.street,
-        houseNumber: formData.houseNumber,
-        zipCode: formData.zipCode,
-        city: formData.city,
-        password: formData.password
-      })
-    });
+  // 3) Backend-Registrierung
+  const result = await register({
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phone,
+    street: formData.street,
+    houseNumber: formData.houseNumber,
+    zipCode: formData.zipCode,
+    city: formData.city,
+    password: formData.password
+  })
 
-    const result = await response.json();
-    console.log("Backend Antwort:", result);
-
-    if (result.success) {
-      router.push("/login");
-    } else {
-      generalError.value = result.message;
-    }
-
-  } catch (err: any) {
-    generalError.value = "Serverfehler: " + err.message;
+  // 4) Erfolg / Fehler anzeigen
+  if (result.success) {
+    router.push("/login")
+  } else {
+    generalError.value = result.message
   }
-};
+}
 </script>
 
 <style scoped>

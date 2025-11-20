@@ -18,7 +18,7 @@ const isAuthenticated = ref<boolean>(false)
 export function useAuth() {
   // Login
   const login = async (email: string, password: string) => {
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/login.php", {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/auth/login.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // Sendet Session-Cookie mit
@@ -45,7 +45,7 @@ export function useAuth() {
       isAuthenticated.value = true;
     }
 
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/me.php", {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/helpers/me.php", {
       method: "GET",
       credentials: "include",
     });
@@ -68,7 +68,7 @@ export function useAuth() {
   };
 
   const logout = async () => {
-    await fetch("http://localhost/OttbergenLocations-Backend/logout.php", {
+    await fetch("http://localhost/OttbergenLocations-Backend/api/auth/logout.php", {
       method: "POST",
       credentials: "include"
     });
@@ -78,7 +78,7 @@ export function useAuth() {
   };
 
   const register = async (formData: any) => {
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/register.php", {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/auth/register.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
