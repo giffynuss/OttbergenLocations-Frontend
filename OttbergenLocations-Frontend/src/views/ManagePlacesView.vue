@@ -148,7 +148,7 @@
               <div class="absolute inset-0 p-6 flex flex-col justify-end z-10">
                 <!-- Titel -->
                 <h3 class="font-luxury text-2xl font-bold text-luxury-ivory tracking-luxury drop-shadow-lg mb-3">
-                  {{ place.title }}
+                  {{ place.name }}
                 </h3>
 
                 <!-- Details -->
@@ -174,7 +174,7 @@
             <div class="bg-luxury-light border-t-2 border-luxury-medium p-5">
               <div class="text-center mb-4">
                 <p class="text-xs text-luxury-brown mb-1 tracking-luxury uppercase">Preis pro Tag</p>
-                <p class="font-luxury text-3xl font-bold text-luxury-dark tracking-luxury">{{ place.price }}€</p>
+                <p class="font-luxury text-3xl font-bold text-luxury-dark tracking-luxury">{{ place.pricePerDay }}€</p>
               </div>
 
               <!-- Aktionsbuttons -->
@@ -264,11 +264,19 @@ import { useAuth } from '@/composables/useAuth'
 
 interface Place {
   id: number
-  title: string
+  name: string
+  description?: string
   location: string
   capacity: number
-  price: number
+  pricePerDay: number
   active: boolean
+  images?: string[]
+  address?: string
+  postalCode?: string
+  latitude?: number
+  longitude?: number
+  createdAt?: string
+  updatedAt?: string
 }
 
 const router = useRouter()
@@ -304,24 +312,20 @@ const loadPlaces = async () => {
   isLoadingPlaces.value = true
 
   try {
-    // TODO: Backend-API für Provider-Orte implementieren
-    // Temporärer Platzhalter - wird durch echte API ersetzt
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/locations/my-locations.php", {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/places/my-places.php", {
       method: "GET",
       credentials: "include"
     })
 
     const data = await res.json()
 
-    if (data.success && data.locations) {
-      places.value = data.locations
+    if (data.success && data.data) {
+      places.value = data.data
     } else {
-      // Falls API noch nicht existiert, leeres Array anzeigen
       places.value = []
     }
   } catch (error) {
     console.error('Fehler beim Laden der Orte:', error)
-    // Bei Fehler leeres Array anzeigen
     places.value = []
   } finally {
     isLoadingPlaces.value = false
@@ -364,7 +368,7 @@ const handleBecomeProvider = async () => {
 
 const editPlace = (place: Place) => {
   // TODO: Bearbeiten-Funktionalität implementieren
-  alert(`Bearbeiten: ${place.title}`)
+  alert(`Bearbeiten: ${place.name}`)
 }
 
 const deletePlace = async (id: number) => {
@@ -373,8 +377,7 @@ const deletePlace = async (id: number) => {
   }
 
   try {
-    // TODO: Backend-API für Löschen implementieren
-    const res = await fetch(`http://localhost/OttbergenLocations-Backend/api/locations/delete.php?id=${id}`, {
+    const res = await fetch(`http://localhost/OttbergenLocations-Backend/api/places/delete.php?id=${id}`, {
       method: "DELETE",
       credentials: "include"
     })
@@ -385,11 +388,12 @@ const deletePlace = async (id: number) => {
       // Ort aus Liste entfernen
       places.value = places.value.filter(p => p.id !== id)
     } else {
-      alert('Fehler beim Löschen des Ortes')
+      const errorMsg = data.error?.message || 'Fehler beim Löschen des Ortes'
+      alert(errorMsg)
     }
   } catch (error) {
     console.error('Fehler beim Löschen:', error)
-    alert('Fehler beim Löschen des Ortes')
+    alert('Es ist ein Fehler bei der Verbindung aufgetreten.')
   }
 }
 </script>
