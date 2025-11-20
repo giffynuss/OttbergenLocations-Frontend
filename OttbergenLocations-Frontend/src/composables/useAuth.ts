@@ -56,6 +56,8 @@ export function useAuth() {
     if (data.success) {
       currentUser.value = data.user;
       isAuthenticated.value = true;
+      console.log(currentUser.value?.gender);
+      
 
       localStorage.setItem("currentUser", JSON.stringify(data.user));
       localStorage.setItem("isAuthenticated", "true");

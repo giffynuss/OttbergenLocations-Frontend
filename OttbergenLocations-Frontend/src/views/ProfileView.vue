@@ -220,7 +220,7 @@
             Passwort
           </h2>
 
-          <div v-if="!showPasswordChange" class="flex items-center justify-between">
+          <div v-if="!showPasswordChange" class="flex items-start justify-between gap-4">
             <div class="flex-1">
               <label class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Aktuelles Passwort
@@ -228,16 +228,16 @@
               <input
                 type="password"
                 value="XXXXXXXXXXXXXX"
-                disabled
+                readonly
                 class="w-full px-4 py-3 bg-booking-very-light border border-black rounded-md text-black cursor-not-allowed"
               />
             </div>
             <button
               type="button"
               @click="showPasswordChange = true"
-              class="ml-4 mt-7 px-6 py-3 bg-booking-medium-brown text-white rounded-lg hover:bg-booking-dark-brown transition-colors duration-300 font-medium"
-            >
-              ändern
+              class="ml-4 mt-7 px-6 py-3 bg-luxury-medium text-white rounded-lg hover:bg-luxury-dark transition-colors duration-300 font-medium"
+              >
+              Ändern
             </button>
           </div>
 
@@ -297,15 +297,15 @@
               <button
                 type="button"
                 @click="cancelPasswordChange"
-                class="flex-1 px-6 py-3 bg-booking-beige text-booking-dark-brown rounded-lg hover:bg-booking-light-beige transition-colors duration-300 font-medium"
-              >
+                class="flex-1 px-6 py-3 bg-luxury-cream text-luxury-dark rounded-lg hover:bg-luxury-light transition-colors duration-300 font-medium"
+                >
                 Abbrechen
               </button>
               <button
                 type="button"
                 @click="savePasswordChange"
-                class="flex-1 px-6 py-3 bg-booking-dark-brown text-white rounded-lg hover:bg-booking-medium-brown transition-colors duration-300 font-medium"
-              >
+                class="flex-1 px-6 py-3 bg-luxury-dark text-white rounded-lg hover:bg-luxury-medium transition-colors duration-300 font-medium"
+                >
                 Passwort speichern
               </button>
             </div>
@@ -327,8 +327,8 @@
           <button
             type="submit"
             :disabled="!isFormValid"
-            class="w-full py-3 px-4 text-white bg-booking-dark-brown hover:bg-booking-medium-brown disabled:bg-booking-gray-brown disabled:cursor-not-allowed rounded-md font-semibold transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-booking-medium-brown"
-          >
+            class="w-full py-3 px-4 text-white bg-luxury-dark hover:bg-luxury-medium disabled:bg-luxury-brown disabled:cursor-not-allowed rounded-md font-semibold transition-colors duration-300"
+            >
             Speichern
           </button>
         </div>
@@ -370,6 +370,7 @@ const passwordData = reactive({
 const errors = reactive({
   firstName: '',
   lastName: '',
+  gender: '',
   email: '',
   phone: '',
   street: '',
@@ -392,6 +393,7 @@ watch(currentUser, (user) => {
   if (!user) return
   formData.firstName = user.first_name
   formData.lastName = user.last_name
+  formData.gender = user.gender
   formData.email = user.email
   formData.phone = user.phone
   formData.street = user.street
