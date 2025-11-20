@@ -1,69 +1,105 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
-// Simpler Authentication State Management
-// In einer echten Anwendung würde dies mit einem Backend verbunden sein
+interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  street: string;
+  houseNumber: string | number;
+  zipCode: string | number;
+  city: string;
+  isProvider: boolean;
+}
+
+const currentUser = ref<User | null>(null);
 const isAuthenticated = ref<boolean>(false)
-const currentUser = ref<{ id: string; name: string; email: string } | null>(null)
 
 export function useAuth() {
-  const login = (email: string, password: string) => {
-    // Simulierte Login-Logik
-    // In einer echten App würde hier eine API-Anfrage stattfinden
-    if (email && password) {
-      isAuthenticated.value = true
-      currentUser.value = {
-        id: '1',
-        name: 'Max Mustermann',
-        email: email
-      }
-      // Speichern im localStorage für Persistenz
-      localStorage.setItem('isAuthenticated', 'true')
-      localStorage.setItem('currentUser', JSON.stringify(currentUser.value))
-      return true
+  // Login
+  const login = async (email: string, password: string) => {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // Sendet Session-Cookie mit
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    // Nach erfolgreichem Login Benutzer laden
+    if (data.success) {
+      await fetchUser();
+      return {success: true};
     }
-    return false
-  }
 
-  const register = (name: string, email: string, password: string) => {
-    // Simulierte Registrierungs-Logik
-    if (name && email && password) {
-      isAuthenticated.value = true
-      currentUser.value = {
-        id: '1',
-        name: name,
-        email: email
-      }
-      localStorage.setItem('isAuthenticated', 'true')
-      localStorage.setItem('currentUser', JSON.stringify(currentUser.value))
-      return true
+    return {success: false, message: data.message || "Unbekannter Fehler"};
+  };
+
+  const fetchUser = async () => {
+    const storedUser = localStorage.getItem("currentUser");
+    const storedAuth = localStorage.getItem("isAuthenticated");
+
+    if (storedUser && storedAuth === "true") {
+      currentUser.value = JSON.parse(storedUser);
+      isAuthenticated.value = true;
     }
-    return false
-  }
 
-  const logout = () => {
-    isAuthenticated.value = false
-    currentUser.value = null
-    localStorage.removeItem('isAuthenticated')
-    localStorage.removeItem('currentUser')
-  }
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/me.php", {
+      method: "GET",
+      credentials: "include",
+    });
 
-  const checkAuth = () => {
-    // Prüfen ob User bereits eingeloggt ist (z.B. nach Seiten-Reload)
-    const storedAuth = localStorage.getItem('isAuthenticated')
-    const storedUser = localStorage.getItem('currentUser')
+    const data = await res.json();
 
-    if (storedAuth === 'true' && storedUser) {
-      isAuthenticated.value = true
-      currentUser.value = JSON.parse(storedUser)
+    if (data.success) {
+      currentUser.value = data.user;
+      isAuthenticated.value = true;
+
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+      localStorage.setItem("isAuthenticated", "true");
+    } else {
+      currentUser.value = null;
+      isAuthenticated.value = false;
+
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isAuthenticated");
     }
+  };
+
+  const logout = async () => {
+    await fetch("http://localhost/OttbergenLocations-Backend/logout.php", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    currentUser.value = null;
+    isAuthenticated.value = false;
+  };
+
+  const register = async (formData: any) => {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/register.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      return { success: true };
+    }
+
+    return { success: false, message: data.message };
   }
 
   return {
-    isAuthenticated: computed(() => isAuthenticated.value),
-    currentUser: computed(() => currentUser.value),
+    currentUser,
+    isAuthenticated,
     login,
     register,
-    logout,
-    checkAuth
+    fetchUser,
+    logout
   }
 }

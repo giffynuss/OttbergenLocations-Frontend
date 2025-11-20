@@ -180,11 +180,10 @@ const isFormValid = computed(() => {
          !errors.password
 })
 
-// Handle Login
-const handleLogin = () => {
+// ⬇️ WICHTIG: Jetzt async, weil Backend Login async ist
+const handleLogin = async () => {
   generalError.value = ''
 
-  // Validate all fields
   const isEmailValid = validateEmail()
   const isPasswordValid = validatePassword()
 
@@ -198,21 +197,14 @@ const handleLogin = () => {
     return
   }
 
-  // Console log for backend placeholder
-  console.log('=== LOGIN FORMULAR DATEN ===')
-  console.log('E-Mail:', formData.email)
-  console.log('Passwort:', formData.password)
-  console.log('reCAPTCHA:', formData.recaptcha)
-  console.log('Timestamp:', new Date().toISOString())
-  console.log('=========================')
+  // Login beim Backend durchführen
+  const result = await login(formData.email, formData.password)
 
-  // Attempt login
-  if (login(formData.email, formData.password)) {
-    // Weiterleitung zur ursprünglich angeforderten Seite oder Startseite
-    const redirect = route.query.redirect as string || '/'
-    router.push(redirect)
+  if (result.success) {
+    const redirect = (route.query.redirect as string) || '/'
+    router.push(redirect);
   } else {
-    generalError.value = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.'
+    generalError.value = result.message;
   }
 }
 </script>
