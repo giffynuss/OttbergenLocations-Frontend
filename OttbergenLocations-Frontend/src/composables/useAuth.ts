@@ -75,6 +75,9 @@ export function useAuth() {
 
     currentUser.value = null;
     isAuthenticated.value = false;
+
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("isAuthenticated");
   };
 
   const register = async (formData: any) => {
@@ -94,12 +97,31 @@ export function useAuth() {
     return { success: false, message: data.message };
   }
 
+  const becomeProvider = async () => {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/user/become-provider.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      // Benutzer neu laden um aktuellen Provider-Status zu erhalten
+      await fetchUser();
+      return { success: true, message: data.message };
+    }
+
+    return { success: false, message: data.error?.message || "Fehler beim Registrieren als Provider" };
+  }
+
   return {
     currentUser,
     isAuthenticated,
     login,
     register,
     fetchUser,
-    logout
+    logout,
+    becomeProvider
   }
 }
