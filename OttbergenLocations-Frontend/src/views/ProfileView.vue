@@ -182,9 +182,12 @@
               <label for="currentPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Aktuelles Passwort
               </label>
-              <input id="currentPassword" v-model="passwordData.current" type="password"
+              <input id="currentPassword" v-model="passwordData.current" type="password" @input="validatePassword"
                 class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
                 placeholder="Aktuelles Passwort eingeben" />
+              <p v-if="passwordErrors.current" class="text-red-600 text-sm mt-1">
+                {{ passwordErrors.current }}
+              </p>
             </div>
 
             <!-- Neues Passwort -->
@@ -192,16 +195,24 @@
               <label for="newPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Neues Passwort
               </label>
-              <input id="newPassword" v-model="passwordData.new" type="password"
-                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"            </div>
+              <input id="newPassword" v-model="passwordData.new" type="password" @input="validatePassword"
+                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black">
+              <p v-if="passwordErrors.new" class="text-red-600 text-sm mt-1">
+                {{ passwordErrors.new }}
+              </p>
+            </div>
 
             <!-- Neues Passwort bestätigen -->
             <div>
               <label for="confirmNewPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Neues Passwort bestätigen
               </label>
-              <input id="confirmNewPassword" v-model="passwordData.confirm" type="password"
-                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"            </div>
+              <input id="confirmNewPassword" v-model="passwordData.confirm" type="password" @input="validatePassword"
+                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black">
+              <p v-if="passwordErrors.confirm" class="text-red-600 text-sm mt-1">
+                {{ passwordErrors.confirm }}
+              </p>
+            </div>
 
             <!-- Buttons -->
             <div class="flex gap-3">
@@ -209,7 +220,7 @@
                 class="flex-1 px-6 py-3 bg-luxury-cream text-luxury-dark rounded-lg hover:bg-luxury-light transition-colors duration-300 font-medium">
                 Abbrechen
               </button>
-              <button type="button" @click="savePasswordChange"
+              <button type="button" @click="savePasswordChange" :disabled="!isPasswordValid"
                 class="flex-1 px-6 py-3 bg-luxury-dark text-white rounded-lg hover:bg-luxury-medium transition-colors duration-300 font-medium">
                 Passwort speichern
               </button>
@@ -281,6 +292,12 @@ const errors = reactive({
   houseNumber: '',
   zipCode: '',
   city: ''
+})
+
+const passwordErrors = reactive({
+  current: "",
+  new: "",
+  confirm: ""
 })
 
 const generalError = ref('')
@@ -380,6 +397,54 @@ const isFormValid = computed(() => {
     formData.city &&
     !Object.values(errors).some(error => error !== '')
 })
+
+const validatePassword = () => {
+  // Aktuelles Passwort
+  if (!passwordData.current) {
+    passwordErrors.current = "Aktuelles Passwort ist erforderlich";
+  } else {
+    passwordErrors.current = "";
+  }
+
+  // Neues Passwort
+  const pass = passwordData.new;
+
+  if (!pass) {
+    passwordErrors.new = "Neues Passwort ist erforderlich";
+  } else if (pass.length < 10) {
+    passwordErrors.new = "Mindestens 10 Zeichen erforderlich";
+  } else if (!/[a-z]/.test(pass)) {
+    passwordErrors.new = "Mindestens 1 Kleinbuchstabe muss enthalten sein";
+  } else if (!/[A-Z]/.test(pass)) {
+    passwordErrors.new = "Mindestens 1 Großbuchstabe muss enthalten sein";
+  } else if (!/\d/.test(pass)) {
+    passwordErrors.new = "Mindestens 1 Zahl muss enthalten sein";
+  } else if (!/[!@#$%^&*+(),.?":{}|<>_\-]/.test(pass)) {
+    passwordErrors.new = "Mindestens 1 Sonderzeichen muss enthalten sein";
+  } else {
+    passwordErrors.new = "";
+  }
+
+  // Passwort bestätigen
+  if (!passwordData.confirm) {
+    passwordErrors.confirm = "Bitte das Passwort bestätigen";
+  } else if (passwordData.new !== passwordData.confirm) {
+    passwordErrors.confirm = "Passwörter stimmen nicht überein";
+  } else {
+    passwordErrors.confirm = "";
+  }
+}
+
+const isPasswordValid = computed(() => {
+  return (
+    passwordErrors.current === "" &&
+    passwordErrors.new === "" &&
+    passwordErrors.confirm === "" &&
+    passwordData.current &&
+    passwordData.new &&
+    passwordData.confirm
+  );
+});
 
 // Cancel Password Change
 const cancelPasswordChange = () => {
