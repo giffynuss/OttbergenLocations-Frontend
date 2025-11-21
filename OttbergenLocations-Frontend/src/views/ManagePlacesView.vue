@@ -317,11 +317,21 @@ const loadPlaces = async () => {
       credentials: "include"
     })
 
+    console.log('my-places.php Response Status:', res.status)
+
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('my-places.php Error Response:', text)
+      throw new Error(`HTTP ${res.status}: ${text.substring(0, 200)}`)
+    }
+
     const data = await res.json()
+    console.log('my-places.php Data:', data)
 
     if (data.success && data.data) {
       places.value = data.data
     } else {
+      console.warn('my-places.php returned no data:', data)
       places.value = []
     }
   } catch (error) {
