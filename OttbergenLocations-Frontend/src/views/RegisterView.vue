@@ -17,7 +17,6 @@
 
       <!-- Registrierungs Formular -->
       <form class="space-y-8" @submit.prevent="handleRegister">
-
         <!-- Stammdaten Sektion -->
         <div class="card-luxury p-8">
           <h2 class="font-luxury text-2xl font-bold text-luxury-dark mb-6 tracking-luxury">
@@ -31,8 +30,7 @@
                 <label for="firstName" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Vorname
                 </label>
-                <input id="firstName" v-model="formData.firstName" type="text" required
-                  class="input-luxury"
+                <input id="firstName" v-model="formData.firstName" type="text" required class="input-luxury"
                   placeholder="Max" @blur="validateField('firstName')" />
                 <p v-if="errors.firstName" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.firstName }}
@@ -43,8 +41,7 @@
                 <label for="lastName" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Nachname
                 </label>
-                <input id="lastName" v-model="formData.lastName" type="text" required
-                  class="input-luxury"
+                <input id="lastName" v-model="formData.lastName" type="text" required class="input-luxury"
                   placeholder="Mustermann" @blur="validateField('lastName')" />
                 <p v-if="errors.lastName" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.lastName }}
@@ -77,8 +74,7 @@
                 <label for="email" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   E-Mail
                 </label>
-                <input id="email" v-model="formData.email" type="email" required
-                  class="input-luxury"
+                <input id="email" v-model="formData.email" type="email" required class="input-luxury"
                   placeholder="ihre@email.de" @blur="validateField('email')" />
                 <p v-if="errors.email" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.email }}
@@ -89,8 +85,7 @@
                 <label for="phone" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Telefonnummer
                 </label>
-                <input id="phone" v-model="formData.phone" type="tel" required
-                  class="input-luxury"
+                <input id="phone" v-model="formData.phone" type="tel" required class="input-luxury"
                   placeholder="+49 123 456789" @blur="validateField('phone')" />
                 <p v-if="errors.phone" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.phone }}
@@ -104,8 +99,7 @@
                 <label for="password" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Passwort
                 </label>
-                <input id="password" v-model="formData.password" type="password" required
-                  class="input-luxury"
+                <input id="password" v-model="formData.password" type="password" required class="input-luxury"
                   placeholder="Mindestens 6 Zeichen" @blur="validateField('password')" />
                 <p v-if="errors.password" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.password }}
@@ -117,8 +111,7 @@
                   Passwort bestätigen
                 </label>
                 <input id="confirmPassword" v-model="formData.confirmPassword" type="password" required
-                  class="input-luxury"
-                  placeholder="Passwort wiederholen" @blur="validateField('confirmPassword')" />
+                  class="input-luxury" placeholder="Passwort wiederholen" @blur="validateField('confirmPassword')" />
                 <p v-if="errors.confirmPassword" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.confirmPassword }}
                 </p>
@@ -140,8 +133,7 @@
                 <label for="street" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Straße
                 </label>
-                <input id="street" v-model="formData.street" type="text" required
-                  class="input-luxury"
+                <input id="street" v-model="formData.street" type="text" required class="input-luxury"
                   placeholder="Musterstraße" @blur="validateField('street')" />
                 <p v-if="errors.street" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.street }}
@@ -152,8 +144,7 @@
                 <label for="houseNumber" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Hausnummer
                 </label>
-                <input id="houseNumber" v-model="formData.houseNumber" type="text" required
-                  class="input-luxury"
+                <input id="houseNumber" v-model="formData.houseNumber" type="text" required class="input-luxury"
                   placeholder="42" @blur="validateField('houseNumber')" />
                 <p v-if="errors.houseNumber" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.houseNumber }}
@@ -167,8 +158,7 @@
                 <label for="zipCode" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   PLZ
                 </label>
-                <input id="zipCode" v-model="formData.zipCode" type="text" required
-                  class="input-luxury"
+                <input id="zipCode" v-model="formData.zipCode" type="text" required class="input-luxury"
                   placeholder="12345" @blur="validateField('zipCode')" />
                 <p v-if="errors.zipCode" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.zipCode }}
@@ -179,8 +169,7 @@
                 <label for="city" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   Ort
                 </label>
-                <input id="city" v-model="formData.city" type="text" required
-                  class="input-luxury"
+                <input id="city" v-model="formData.city" type="text" required class="input-luxury"
                   placeholder="Musterstadt" @blur="validateField('city')" />
                 <p v-if="errors.city" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.city }}
@@ -239,7 +228,8 @@
         <!-- Login Link -->
         <div class="text-center text-sm pt-4 border-t border-luxury-light">
           <span class="text-luxury-brown font-light">Bereits ein Konto? </span>
-          <router-link to="/login" class="text-luxury-accent hover:text-luxury-dark font-medium transition-colors duration-300 tracking-luxury">
+          <router-link to="/login"
+            class="text-luxury-accent hover:text-luxury-dark font-medium transition-colors duration-300 tracking-luxury">
             Jetzt anmelden
           </router-link>
         </div>
@@ -249,135 +239,145 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuth } from '@/composables/useAuth'
+import { reactive, computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuth } from "@/composables/useAuth";
 
-const router = useRouter()
-const { register } = useAuth()
+const router = useRouter();
+const { register } = useAuth();
 
 // Formulardaten
 const formData = reactive({
-  firstName: '',
-  lastName: '',
-  gender: '',
-  email: '',
-  phone: '',
-  password: '',
-  confirmPassword: '',
-  street: '',
-  houseNumber: '',
-  zipCode: '',
-  city: '',
+  firstName: "",
+  lastName: "",
+  gender: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+  street: "",
+  houseNumber: "",
+  zipCode: "",
+  city: "",
   recaptcha: false,
-  agbAccepted: false
-})
+  agbAccepted: false,
+});
 
 // Fehlertexte
 const errors = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  password: '',
-  confirmPassword: '',
-  street: '',
-  houseNumber: '',
-  zipCode: '',
-  city: ''
-})
+  firstName: "",
+  lastName: "",
+  gender: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+  street: "",
+  houseNumber: "",
+  zipCode: "",
+  city: "",
+});
 
-const generalError = ref('')
+const generalError = ref("");
 
 // Validierungsfunktion
 const validateField = (fieldName: string) => {
   switch (fieldName) {
-    case 'firstName':
-    case 'lastName':
+    case "firstName":
+    case "lastName":
       if (!formData[fieldName]) {
-        errors[fieldName] = 'Dieses Feld ist erforderlich'
+        errors[fieldName] = "Dieses Feld ist erforderlich";
       } else if (formData[fieldName].length < 2) {
-        errors[fieldName] = 'Mindestens 2 Zeichen erforderlich'
+        errors[fieldName] = "Mindestens 2 Zeichen erforderlich";
       } else {
-        errors[fieldName] = ''
+        errors[fieldName] = "";
       }
-      break
+      break;
 
-    case 'email':
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    case "email":
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!formData.email) {
-        errors.email = 'E-Mail ist erforderlich'
+        errors.email = "E-Mail ist erforderlich";
       } else if (!emailRegex.test(formData.email)) {
-        errors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse ein'
+        errors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein";
       } else {
-        errors.email = ''
+        errors.email = "";
       }
-      break
+      break;
 
-    case 'phone':
-      const phoneRegex = /^[\d\s+()-]+$/
+    case "gender":
+      if (!formData.gender) {
+        errors.gender = "Bitte wählen Sie eine Anrede aus";
+      } else {
+        errors.gender = "";
+      }
+      break;
+
+    case "phone":
+      const phoneRegex = /^[\d\s+()-]+$/;
       if (!formData.phone) {
-        errors.phone = 'Telefonnummer ist erforderlich'
+        errors.phone = "Telefonnummer ist erforderlich";
       } else if (!phoneRegex.test(formData.phone) || formData.phone.length < 6) {
-        errors.phone = 'Bitte geben Sie eine gültige Telefonnummer ein'
+        errors.phone = "Bitte geben Sie eine gültige Telefonnummer ein";
       } else {
-        errors.phone = ''
+        errors.phone = "";
       }
-      break
+      break;
 
-    case 'password':
+    case "password":
       if (!formData.password) {
-        errors.password = 'Passwort ist erforderlich'
+        errors.password = "Passwort ist erforderlich";
       } else if (formData.password.length < 6) {
-        errors.password = 'Passwort muss mindestens 6 Zeichen lang sein'
+        errors.password = "Passwort muss mindestens 6 Zeichen lang sein";
       } else {
-        errors.password = ''
+        errors.password = "";
       }
-      break
+      break;
 
-    case 'confirmPassword':
+    case "confirmPassword":
       if (!formData.confirmPassword) {
-        errors.confirmPassword = 'Bitte bestätigen Sie Ihr Passwort'
+        errors.confirmPassword = "Bitte bestätigen Sie Ihr Passwort";
       } else if (formData.password !== formData.confirmPassword) {
-        errors.confirmPassword = 'Passwörter stimmen nicht überein'
+        errors.confirmPassword = "Passwörter stimmen nicht überein";
       } else {
-        errors.confirmPassword = ''
+        errors.confirmPassword = "";
       }
-      break
+      break;
 
-    case 'street':
-    case 'city':
+    case "street":
+    case "city":
       if (!formData[fieldName]) {
-        errors[fieldName] = 'Dieses Feld ist erforderlich'
+        errors[fieldName] = "Dieses Feld ist erforderlich";
       } else {
-        errors[fieldName] = ''
+        errors[fieldName] = "";
       }
-      break
+      break;
 
-    case 'houseNumber':
+    case "houseNumber":
       if (!formData.houseNumber) {
-        errors.houseNumber = 'Hausnummer ist erforderlich'
+        errors.houseNumber = "Hausnummer ist erforderlich";
       } else {
-        errors.houseNumber = ''
+        errors.houseNumber = "";
       }
-      break
+      break;
 
-    case 'zipCode':
-      const zipRegex = /^\d{5}$/
+    case "zipCode":
+      const zipRegex = /^\d{5}$/;
       if (!formData.zipCode) {
-        errors.zipCode = 'PLZ ist erforderlich'
+        errors.zipCode = "PLZ ist erforderlich";
       } else if (!zipRegex.test(formData.zipCode)) {
-        errors.zipCode = 'PLZ muss 5 Ziffern haben'
+        errors.zipCode = "PLZ muss 5 Ziffern haben";
       } else {
-        errors.zipCode = ''
+        errors.zipCode = "";
       }
-      break
+      break;
   }
-}
+};
 
-// Gesamte Formularvalidierung
+// Formularvalidierung prüfen
 const isFormValid = computed(() => {
-  return formData.firstName &&
+  return (
+    formData.firstName &&
     formData.lastName &&
     formData.gender &&
     formData.email &&
@@ -390,42 +390,40 @@ const isFormValid = computed(() => {
     formData.city &&
     formData.recaptcha &&
     formData.agbAccepted &&
-    !Object.values(errors).some(e => e !== '')
-})
+    !Object.values(errors).some((error) => error !== "")
+  );
+});
 
 // Registrierung absenden
 const handleRegister = async () => {
-  generalError.value = ""
+  generalError.value = "";
 
-  // 1) Alle Felder validieren
-  Object.keys(errors).forEach((field) => validateField(field))
+  Object.keys(errors).forEach((field) => validateField(field));
 
-  // 2) Wenn Fehler → abbrechen
-  if (Object.values(errors).some(e => e !== '')) {
-    generalError.value = "Bitte korrigieren Sie die Fehler im Formular."
-    return
+  if (Object.values(errors).some((e) => e !== "")) {
+    generalError.value = "Bitte korrigieren Sie die Fehler im Formular.";
+    return;
   }
 
-  // 3) Backend-Registrierung
   const result = await register({
     firstName: formData.firstName,
     lastName: formData.lastName,
+    gender: formData.gender,
     email: formData.email,
     phone: formData.phone,
     street: formData.street,
     houseNumber: formData.houseNumber,
     zipCode: formData.zipCode,
     city: formData.city,
-    password: formData.password
-  })
+    password: formData.password,
+  });
 
-  // 4) Erfolg / Fehler anzeigen
   if (result.success) {
-    router.push("/login")
+    router.push("/login");
   } else {
-    generalError.value = result.message
+    generalError.value = result.message;
   }
-}
+};
 </script>
 
 <style scoped>

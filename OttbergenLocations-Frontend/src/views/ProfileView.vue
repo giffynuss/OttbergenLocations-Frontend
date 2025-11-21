@@ -24,15 +24,9 @@
                 <label for="firstName" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Vorname
                 </label>
-                <input
-                  id="firstName"
-                  v-model="formData.firstName"
-                  type="text"
-                  required
+                <input id="firstName" v-model="formData.firstName" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="Max"
-                  @blur="validateField('firstName')"
-                />
+                  placeholder="Max" @blur="validateField('firstName')" />
                 <p v-if="errors.firstName" class="mt-1 text-sm text-red-600">
                   {{ errors.firstName }}
                 </p>
@@ -42,15 +36,9 @@
                 <label for="lastName" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Nachname
                 </label>
-                <input
-                  id="lastName"
-                  v-model="formData.lastName"
-                  type="text"
-                  required
+                <input id="lastName" v-model="formData.lastName" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="Mustermann"
-                  @blur="validateField('lastName')"
-                />
+                  placeholder="Mustermann" @blur="validateField('lastName')" />
                 <p v-if="errors.lastName" class="mt-1 text-sm text-red-600">
                   {{ errors.lastName }}
                 </p>
@@ -64,23 +52,13 @@
               </label>
               <div class="flex space-x-6">
                 <label class="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    v-model="formData.gender"
-                    value="herr"
-                    required
-                    class="w-5 h-5 text-booking-medium-brown border-black focus:ring-booking-medium-brown"
-                  />
+                  <input type="radio" v-model="formData.gender" value="herr" required
+                    class="w-5 h-5 text-booking-medium-brown border-black focus:ring-booking-medium-brown" />
                   <span class="ml-2 text-booking-dark-brown">Herr</span>
                 </label>
                 <label class="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    v-model="formData.gender"
-                    value="frau"
-                    required
-                    class="w-5 h-5 text-booking-medium-brown border-black focus:ring-booking-medium-brown"
-                  />
+                  <input type="radio" v-model="formData.gender" value="frau" required
+                    class="w-5 h-5 text-booking-medium-brown border-black focus:ring-booking-medium-brown" />
                   <span class="ml-2 text-booking-dark-brown">Frau</span>
                 </label>
               </div>
@@ -92,15 +70,9 @@
                 <label for="email" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   E-Mail
                 </label>
-                <input
-                  id="email"
-                  v-model="formData.email"
-                  type="email"
-                  required
+                <input id="email" v-model="formData.email" type="email" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="ihre@email.de"
-                  @blur="validateField('email')"
-                />
+                  placeholder="ihre@email.de" @blur="validateField('email')" />
                 <p v-if="errors.email" class="mt-1 text-sm text-red-600">
                   {{ errors.email }}
                 </p>
@@ -110,15 +82,9 @@
                 <label for="phone" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Telefonnummer
                 </label>
-                <input
-                  id="phone"
-                  v-model="formData.phone"
-                  type="tel"
-                  required
+                <input id="phone" v-model="formData.phone" type="tel" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="+49 123 456789"
-                  @blur="validateField('phone')"
-                />
+                  placeholder="+49 123 456789" @blur="validateField('phone')" />
                 <p v-if="errors.phone" class="mt-1 text-sm text-red-600">
                   {{ errors.phone }}
                 </p>
@@ -140,15 +106,9 @@
                 <label for="street" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Straße
                 </label>
-                <input
-                  id="street"
-                  v-model="formData.street"
-                  type="text"
-                  required
+                <input id="street" v-model="formData.street" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="Musterstraße"
-                  @blur="validateField('street')"
-                />
+                  placeholder="Musterstraße" @blur="validateField('street')" />
                 <p v-if="errors.street" class="mt-1 text-sm text-red-600">
                   {{ errors.street }}
                 </p>
@@ -158,15 +118,9 @@
                 <label for="houseNumber" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Hausnummer
                 </label>
-                <input
-                  id="houseNumber"
-                  v-model="formData.houseNumber"
-                  type="text"
-                  required
+                <input id="houseNumber" v-model="formData.houseNumber" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="42"
-                  @blur="validateField('houseNumber')"
-                />
+                  placeholder="42" @blur="validateField('houseNumber')" />
                 <p v-if="errors.houseNumber" class="mt-1 text-sm text-red-600">
                   {{ errors.houseNumber }}
                 </p>
@@ -179,15 +133,9 @@
                 <label for="zipCode" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   PLZ
                 </label>
-                <input
-                  id="zipCode"
-                  v-model="formData.zipCode"
-                  type="text"
-                  required
+                <input id="zipCode" v-model="formData.zipCode" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="12345"
-                  @blur="validateField('zipCode')"
-                />
+                  placeholder="12345" @blur="validateField('zipCode')" />
                 <p v-if="errors.zipCode" class="mt-1 text-sm text-red-600">
                   {{ errors.zipCode }}
                 </p>
@@ -197,15 +145,9 @@
                 <label for="city" class="block text-sm font-medium text-booking-dark-brown mb-2">
                   Ort
                 </label>
-                <input
-                  id="city"
-                  v-model="formData.city"
-                  type="text"
-                  required
+                <input id="city" v-model="formData.city" type="text" required
                   class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                  placeholder="Musterstadt"
-                  @blur="validateField('city')"
-                />
+                  placeholder="Musterstadt" @blur="validateField('city')" />
                 <p v-if="errors.city" class="mt-1 text-sm text-red-600">
                   {{ errors.city }}
                 </p>
@@ -225,18 +167,11 @@
               <label class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Aktuelles Passwort
               </label>
-              <input
-                type="password"
-                value="XXXXXXXXXXXXXX"
-                readonly
-                class="w-full px-4 py-3 bg-booking-very-light border border-black rounded-md text-black cursor-not-allowed"
-              />
+              <input type="password" value="XXXXXXXXXXXXXX" readonly
+                class="w-full px-4 py-3 bg-booking-very-light border border-black rounded-md text-black cursor-not-allowed" />
             </div>
-            <button
-              type="button"
-              @click="showPasswordChange = true"
-              class="ml-4 mt-7 px-6 py-3 bg-luxury-medium text-white rounded-lg hover:bg-luxury-dark transition-colors duration-300 font-medium"
-              >
+            <button type="button" @click="showPasswordChange = true"
+              class="ml-4 mt-7 px-6 py-3 bg-luxury-medium text-white rounded-lg hover:bg-luxury-dark transition-colors duration-300 font-medium">
               Ändern
             </button>
           </div>
@@ -247,13 +182,9 @@
               <label for="currentPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Aktuelles Passwort
               </label>
-              <input
-                id="currentPassword"
-                v-model="passwordData.current"
-                type="password"
+              <input id="currentPassword" v-model="passwordData.current" type="password"
                 class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                placeholder="Aktuelles Passwort eingeben"
-              />
+                placeholder="Aktuelles Passwort eingeben" />
             </div>
 
             <!-- Neues Passwort -->
@@ -261,51 +192,25 @@
               <label for="newPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Neues Passwort
               </label>
-              <input
-                id="newPassword"
-                v-model="passwordData.new"
-                type="password"
-                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                placeholder="Mindestens 6 Zeichen"
-                @blur="validatePassword"
-              />
-              <p v-if="passwordErrors.new" class="mt-1 text-sm text-red-600">
-                {{ passwordErrors.new }}
-              </p>
-            </div>
+              <input id="newPassword" v-model="passwordData.new" type="password"
+                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"            </div>
 
             <!-- Neues Passwort bestätigen -->
             <div>
               <label for="confirmNewPassword" class="block text-sm font-medium text-booking-dark-brown mb-2">
                 Neues Passwort bestätigen
               </label>
-              <input
-                id="confirmNewPassword"
-                v-model="passwordData.confirm"
-                type="password"
-                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"
-                placeholder="Passwort wiederholen"
-                @blur="validatePasswordConfirm"
-              />
-              <p v-if="passwordErrors.confirm" class="mt-1 text-sm text-red-600">
-                {{ passwordErrors.confirm }}
-              </p>
-            </div>
+              <input id="confirmNewPassword" v-model="passwordData.confirm" type="password"
+                class="w-full px-4 py-3 bg-white border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-booking-medium-brown text-black"            </div>
 
             <!-- Buttons -->
             <div class="flex gap-3">
-              <button
-                type="button"
-                @click="cancelPasswordChange"
-                class="flex-1 px-6 py-3 bg-luxury-cream text-luxury-dark rounded-lg hover:bg-luxury-light transition-colors duration-300 font-medium"
-                >
+              <button type="button" @click="cancelPasswordChange"
+                class="flex-1 px-6 py-3 bg-luxury-cream text-luxury-dark rounded-lg hover:bg-luxury-light transition-colors duration-300 font-medium">
                 Abbrechen
               </button>
-              <button
-                type="button"
-                @click="savePasswordChange"
-                class="flex-1 px-6 py-3 bg-luxury-dark text-white rounded-lg hover:bg-luxury-medium transition-colors duration-300 font-medium"
-                >
+              <button type="button" @click="savePasswordChange"
+                class="flex-1 px-6 py-3 bg-luxury-dark text-white rounded-lg hover:bg-luxury-medium transition-colors duration-300 font-medium">
                 Passwort speichern
               </button>
             </div>
@@ -313,22 +218,21 @@
         </div>
 
         <!-- Fehler Nachricht -->
-        <div v-if="generalError" class="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3">
+        <div v-if="generalError"
+          class="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-md p-3">
           {{ generalError }}
         </div>
 
         <!-- Erfolg Nachricht -->
-        <div v-if="successMessage" class="text-green-600 text-sm text-center bg-green-50 border border-green-200 rounded-md p-3">
+        <div v-if="successMessage"
+          class="text-green-600 text-sm text-center bg-green-50 border border-green-200 rounded-md p-3">
           {{ successMessage }}
         </div>
 
         <!-- Speichern Button -->
         <div>
-          <button
-            type="submit"
-            :disabled="!isFormValid"
-            class="w-full py-3 px-4 text-white bg-luxury-dark hover:bg-luxury-medium disabled:bg-luxury-brown disabled:cursor-not-allowed rounded-md font-semibold transition-colors duration-300"
-            >
+          <button type="submit" :disabled="!isFormValid"
+            class="w-full py-3 px-4 text-white bg-luxury-dark hover:bg-luxury-medium disabled:bg-luxury-brown disabled:cursor-not-allowed rounded-md font-semibold transition-colors duration-300">
             Speichern
           </button>
         </div>
@@ -377,11 +281,6 @@ const errors = reactive({
   houseNumber: '',
   zipCode: '',
   city: ''
-})
-
-const passwordErrors = reactive({
-  new: '',
-  confirm: ''
 })
 
 const generalError = ref('')
@@ -468,35 +367,18 @@ const validateField = (fieldName: string) => {
   }
 }
 
-// Password Validation
-const validatePassword = () => {
-  if (passwordData.new && passwordData.new.length < 6) {
-    passwordErrors.new = 'Passwort muss mindestens 6 Zeichen lang sein'
-  } else {
-    passwordErrors.new = ''
-  }
-}
-
-const validatePasswordConfirm = () => {
-  if (passwordData.confirm && passwordData.new !== passwordData.confirm) {
-    passwordErrors.confirm = 'Passwörter stimmen nicht überein'
-  } else {
-    passwordErrors.confirm = ''
-  }
-}
-
 // Form Valid Computed
 const isFormValid = computed(() => {
   return formData.firstName &&
-         formData.lastName &&
-         formData.gender &&
-         formData.email &&
-         formData.phone &&
-         formData.street &&
-         formData.houseNumber &&
-         formData.zipCode &&
-         formData.city &&
-         !Object.values(errors).some(error => error !== '')
+    formData.lastName &&
+    formData.gender &&
+    formData.email &&
+    formData.phone &&
+    formData.street &&
+    formData.houseNumber &&
+    formData.zipCode &&
+    formData.city &&
+    !Object.values(errors).some(error => error !== '')
 })
 
 // Cancel Password Change
@@ -505,41 +387,33 @@ const cancelPasswordChange = () => {
   passwordData.current = ''
   passwordData.new = ''
   passwordData.confirm = ''
-  passwordErrors.new = ''
-  passwordErrors.confirm = ''
 }
 
 // Save Password Change
-const savePasswordChange = () => {
-  if (!passwordData.current) {
-    generalError.value = 'Bitte geben Sie Ihr aktuelles Passwort ein'
-    return
+const savePasswordChange = async () => {
+  generalError.value = "";
+  successMessage.value = "";
+
+  const res = await fetch("http://localhost/OttbergenLocations-Backend/api/user/change_password.php", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      currentPassword: passwordData.current,
+      newPassword: passwordData.new,
+      confirmPassword: passwordData.confirm,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    generalError.value = data.message;
+    return;
   }
 
-  if (!passwordData.new) {
-    generalError.value = 'Bitte geben Sie ein neues Passwort ein'
-    return
-  }
-
-  validatePassword()
-  validatePasswordConfirm()
-
-  if (passwordErrors.new || passwordErrors.confirm) {
-    generalError.value = 'Bitte korrigieren Sie die Passwort-Fehler'
-    return
-  }
-
-  successMessage.value = 'Passwort wurde erfolgreich geändert'
-  generalError.value = ''
-  showPasswordChange.value = false
-  passwordData.current = ''
-  passwordData.new = ''
-  passwordData.confirm = ''
-
-  // Success message ausblenden nach 3 Sekunden
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
+  successMessage.value = data.message;
+  showPasswordChange.value = false;
 }
 
 // Handle Save
