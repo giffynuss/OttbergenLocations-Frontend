@@ -54,10 +54,17 @@ export function useAuth() {
     const data = await res.json();
 
     if (data.success) {
-      currentUser.value = data.user;
-      isAuthenticated.value = true;      
+      // Map backend snake_case to frontend camelCase
+      // Backend gibt is_provider jetzt garantiert als Boolean zurück
+      const user = {
+        ...data.user,
+        isProvider: Boolean(data.user.is_provider)
+      };
 
-      localStorage.setItem("currentUser", JSON.stringify(data.user));
+      currentUser.value = user;
+      isAuthenticated.value = true;
+
+      localStorage.setItem("currentUser", JSON.stringify(user));
       localStorage.setItem("isAuthenticated", "true");
     } else {
       currentUser.value = null;
@@ -76,6 +83,9 @@ export function useAuth() {
 
     currentUser.value = null;
     isAuthenticated.value = false;
+
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("isAuthenticated");
   };
 
   const register = async (formData: any) => {
@@ -95,12 +105,33 @@ export function useAuth() {
     return { success: false, message: data.message };
   }
 
+  const becomeProvider = async () => {
+    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/user/become-provider.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
+    });
+
+    const data = await res.json();
+    console.log('becomeProvider Response:', data);
+
+    if (data.success) {
+      // Benutzer neu laden um aktuellen Provider-Status zu erhalten
+      await fetchUser();
+      console.log('After fetchUser - currentUser.isProvider:', currentUser.value?.isProvider);
+      return { success: true, message: data.message };
+    }
+
+    return { success: false, message: data.error?.message || "Fehler beim Registrieren als Provider" };
+  }
+
   return {
     currentUser,
     isAuthenticated,
     login,
     register,
     fetchUser,
-    logout
+    logout,
+    becomeProvider
   }
 }

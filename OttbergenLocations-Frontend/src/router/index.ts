@@ -51,6 +51,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/orte-einstellen',
+    name: 'orte-einstellen',
+    component: () => import('../views/ManagePlacesView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/my-bookings',
     name: 'my-bookings',
     component: () => import('../views/MyBookingsView.vue'),
