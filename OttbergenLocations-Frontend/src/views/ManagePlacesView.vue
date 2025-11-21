@@ -15,13 +15,13 @@
         </h1>
 
         <!-- Untertext direkt unter Überschrift -->
-        <p v-if="isAuthenticated && currentUser?.isProvider" class="text-luxury-brown font-light text-lg max-w-3xl mx-auto">
+        <p v-if="isAuthenticated && currentUser?.is_provider" class="text-luxury-brown font-light text-lg max-w-3xl mx-auto">
           Verwalten Sie hier Ihre Orte und Veranstaltungsräume. Sie können neue Orte hinzufügen, bestehende bearbeiten oder löschen.
         </p>
       </div>
 
       <!-- Informationsseite für nicht eingeloggte / nicht-Provider Nutzer -->
-      <div v-if="!isAuthenticated || !currentUser?.isProvider" class="max-w-4xl mx-auto">
+      <div v-if="!isAuthenticated || !currentUser?.is_provider" class="max-w-4xl mx-auto">
         <div class="card-luxury p-12">
           <!-- Dekorative Elemente -->
           <div class="flex items-center justify-center mb-8">
@@ -296,13 +296,13 @@ onMounted(async () => {
   }
 
   // Wenn User Provider ist, Orte laden
-  if (isAuthenticated.value && currentUser.value?.isProvider) {
+  if (isAuthenticated.value && currentUser.value?.is_provider) {
     await loadPlaces()
   }
 })
 
 // Watch für Provider-Status Änderungen
-watch(() => currentUser.value?.isProvider, async (isProvider) => {
+watch(() => currentUser.value?.is_provider, async (isProvider) => {
   if (isProvider) {
     await loadPlaces()
   }

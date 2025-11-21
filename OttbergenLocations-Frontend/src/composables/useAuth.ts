@@ -54,17 +54,11 @@ export function useAuth() {
     const data = await res.json();
 
     if (data.success) {
-      // Map backend snake_case to frontend camelCase
       // Backend gibt is_provider jetzt garantiert als Boolean zurück
-      const user = {
-        ...data.user,
-        isProvider: Boolean(data.user.is_provider)
-      };
-
-      currentUser.value = user;
+      currentUser.value = data.user;
       isAuthenticated.value = true;
 
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
       localStorage.setItem("isAuthenticated", "true");
     } else {
       currentUser.value = null;
@@ -118,7 +112,7 @@ export function useAuth() {
     if (data.success) {
       // Benutzer neu laden um aktuellen Provider-Status zu erhalten
       await fetchUser();
-      console.log('After fetchUser - currentUser.isProvider:', currentUser.value?.isProvider);
+      console.log('After fetchUser - currentUser.is_provider:', currentUser.value?.is_provider);
       return { success: true, message: data.message };
     }
 
