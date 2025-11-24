@@ -163,32 +163,98 @@
         </div>
       </div>
 
-      <!-- Rechte Seite: Karte -->
+      <!-- Rechte Seite: Bildergalerie -->
       <div class="lg:w-1/2 bg-luxury-light relative">
         <div class="sticky top-24 h-[calc(100vh-180px)]">
-          <!-- Karten-Placeholder -->
-          <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-luxury-light via-luxury-cream to-luxury-tan relative overflow-hidden">
+          <!-- Placeholder wenn kein Ort ausgewählt -->
+          <div v-if="!selectedPlace" class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-luxury-light via-luxury-cream to-luxury-tan relative overflow-hidden">
             <!-- Dekoratives Muster im Hintergrund -->
             <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%); background-size: 60px 60px; color: var(--color-luxury-dark);"></div>
 
-            <!-- Map Icon -->
+            <!-- Image Icon -->
             <svg class="w-40 h-40 text-luxury-brown opacity-30 mb-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <p class="font-luxury text-2xl text-luxury-dark font-bold mb-2 relative z-10 tracking-luxury">Interaktive Karte</p>
-            <p class="text-luxury-brown text-base font-light relative z-10">OpenStreetMap Integration</p>
+            <p class="font-luxury text-2xl text-luxury-dark font-bold mb-2 relative z-10 tracking-luxury">Bildergalerie</p>
+            <p class="text-luxury-brown text-base font-light relative z-10">Wählen Sie einen Ort aus</p>
+          </div>
 
-            <!-- Markierte Orte auf der Karte -->
-            <div v-if="selectedPlace" class="absolute bottom-8 left-8 right-8 bg-white shadow-luxury-xl p-6 border-2 border-luxury-gold z-20">
-              <h4 class="font-luxury text-xl font-bold text-luxury-dark mb-2 tracking-luxury">{{ selectedPlace.name }}</h4>
-              <div class="flex items-center gap-2 text-sm text-luxury-brown mb-3">
-                <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <span class="font-medium">{{ selectedPlace.location }}</span>
+          <!-- Bildergalerie wenn Ort ausgewählt -->
+          <div v-else class="w-full h-full flex flex-col bg-white overflow-hidden">
+            <!-- Header mit Ort-Informationen -->
+            <div class="p-6 border-b-2 border-luxury-gold bg-luxury-ivory">
+              <h3 class="font-luxury text-2xl font-bold text-luxury-dark mb-3 tracking-luxury">{{ selectedPlace.name }}</h3>
+              <div class="flex items-center gap-4 text-sm text-luxury-brown mb-3">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  <span class="font-medium">{{ selectedPlace.location }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  <span class="font-medium">{{ selectedPlace.capacity }} Personen</span>
+                </div>
               </div>
-              <p class="font-luxury text-2xl text-luxury-gold font-bold tracking-luxury">{{ selectedPlace.pricePerDay }}€ <span class="text-sm font-normal text-luxury-brown">/ Tag</span></p>
+              <div class="flex items-baseline gap-2">
+                <span class="font-luxury text-3xl font-bold text-luxury-gold tracking-luxury">{{ selectedPlace.pricePerDay }}€</span>
+                <span class="text-sm text-luxury-brown">/ Tag</span>
+              </div>
+            </div>
+
+            <!-- Bildergalerie - scrollbar -->
+            <div class="flex-1 overflow-y-auto p-6">
+              <div v-if="selectedPlace.images && selectedPlace.images.length > 0" class="space-y-4">
+                <!-- Bilder Grid -->
+                <div
+                  v-for="(image, index) in selectedPlace.images"
+                  :key="index"
+                  class="relative group cursor-pointer overflow-hidden border-2 border-luxury-light hover:border-luxury-gold transition-all duration-300"
+                >
+                  <img
+                    :src="image"
+                    :alt="`${selectedPlace.name} - Bild ${index + 1}`"
+                    class="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-300"
+                    @error="handleImageError"
+                  />
+                  <!-- Image Overlay on Hover -->
+                  <div class="absolute inset-0 bg-luxury-dark opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-luxury-dark/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p class="text-luxury-ivory text-sm font-medium">Bild {{ index + 1 }} von {{ selectedPlace.images.length }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fallback wenn keine Bilder -->
+              <div v-else class="flex flex-col items-center justify-center h-full">
+                <svg class="w-24 h-24 text-luxury-tan opacity-40 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <p class="text-luxury-brown">Keine Bilder verfügbar</p>
+              </div>
+            </div>
+
+            <!-- Features falls vorhanden -->
+            <div v-if="selectedPlace.features && selectedPlace.features.length > 0" class="border-t border-luxury-light p-6 bg-luxury-ivory">
+              <h4 class="font-luxury text-lg font-bold text-luxury-dark mb-3 tracking-luxury">Ausstattung</h4>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="feature in selectedPlace.features.slice(0, 6)"
+                  :key="feature.id || feature.name"
+                  class="px-3 py-1.5 bg-luxury-light border border-luxury-tan text-luxury-dark text-xs font-medium"
+                >
+                  {{ feature.name }}
+                </span>
+                <span
+                  v-if="selectedPlace.features.length > 6"
+                  class="px-3 py-1.5 bg-luxury-gold/20 border border-luxury-gold text-luxury-dark text-xs font-medium"
+                >
+                  +{{ selectedPlace.features.length - 6 }} weitere
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -204,7 +270,7 @@ import { usePlaces } from '@/composables/usePlaces'
 import type { Place } from '@/types/place'
 
 const router = useRouter()
-const { places, loading, error, fetchPlaces } = usePlaces()
+const { loading, error, fetchPlaces } = usePlaces()
 
 // Suchformular
 const searchQuery = ref('')
@@ -276,20 +342,23 @@ const performSearch = async () => {
 
 // Ort buchen
 const bookPlace = (place: Place) => {
-  if (!checkInDate.value || !checkOutDate.value) {
-    alert('Bitte wählen Sie Check-in und Check-out Datum')
-    return
-  }
-
-  // Navigation zur Detail-Seite mit Datum-Parametern
+  // Navigation zur Detail-Seite - Zeitraum optional
+  // Validierung erfolgt in der Detailansicht
   router.push({
     name: 'location-detail',
     params: { id: place.id.toString() },
     query: {
-      checkIn: checkInDate.value,
-      checkOut: checkOutDate.value
+      checkIn: checkInDate.value || undefined,
+      checkOut: checkOutDate.value || undefined
     }
   })
+}
+
+// Bild-Fehlerbehandlung
+const handleImageError = (event: Event) => {
+  const target = event.target as HTMLImageElement
+  // Fallback zu einem Platzhalter-Bild
+  target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23f5f3f0" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="%23a8998e"%3EBild nicht verfügbar%3C/text%3E%3C/svg%3E'
 }
 </script>
 

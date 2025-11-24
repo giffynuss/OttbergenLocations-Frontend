@@ -392,7 +392,31 @@ const getProviderInitial = () => {
 }
 
 const handleBooking = () => {
-  if (!place.value || !checkInDate.value || !checkOutDate.value) {
+  if (!place.value) {
+    return
+  }
+
+  // Validierung: Check-in und Check-out müssen ausgewählt sein
+  if (!checkInDate.value || !checkOutDate.value) {
+    alert('Bitte wählen Sie Check-in und Check-out Datum aus.')
+    return
+  }
+
+  // Validierung: Check-out muss nach Check-in liegen
+  const checkIn = new Date(checkInDate.value)
+  const checkOut = new Date(checkOutDate.value)
+
+  if (checkOut <= checkIn) {
+    alert('Das Check-out Datum muss nach dem Check-in Datum liegen.')
+    return
+  }
+
+  // Validierung: Check-in darf nicht in der Vergangenheit liegen
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (checkIn < today) {
+    alert('Das Check-in Datum darf nicht in der Vergangenheit liegen.')
     return
   }
 
