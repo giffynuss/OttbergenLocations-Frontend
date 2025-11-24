@@ -49,8 +49,22 @@
       </div>
     </div>
 
+    <!-- Ladeanzeige -->
+    <div v-if="loading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex justify-center items-center py-32">
+        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-luxury-gold"></div>
+      </div>
+    </div>
+
+    <!-- Fehleranzeige -->
+    <div v-else-if="error" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="p-6 bg-red-100 border border-red-400 text-red-700">
+        <p class="font-medium">{{ error }}</p>
+      </div>
+    </div>
+
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Linke Spalte: Hauptinformationen -->
         <div class="lg:col-span-2 space-y-8">
@@ -66,33 +80,15 @@
               {{ place?.description }}
             </p>
 
-            <!-- Zusätzliche Features (Platzhalter für Backend-Daten) -->
-            <div class="mt-8 pt-8 border-t border-luxury-light">
+            <!-- Zusätzliche Features (vom Backend) -->
+            <div v-if="place?.features && place.features.length > 0" class="mt-8 pt-8 border-t border-luxury-light">
               <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-4 tracking-luxury">Ausstattung & Features</h3>
               <div class="grid grid-cols-2 gap-4">
-                <div class="flex items-center gap-3 text-luxury-brown">
+                <div v-for="feature in place.features" :key="feature.id" class="flex items-center gap-3 text-luxury-brown">
                   <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  <span>WLAN verfügbar</span>
-                </div>
-                <div class="flex items-center gap-3 text-luxury-brown">
-                  <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  <span>Parkmöglichkeiten</span>
-                </div>
-                <div class="flex items-center gap-3 text-luxury-brown">
-                  <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  <span>Küche vorhanden</span>
-                </div>
-                <div class="flex items-center gap-3 text-luxury-brown">
-                  <svg class="w-5 h-5 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                  <span>Barrierearm</span>
+                  <span>{{ feature.name }}</span>
                 </div>
               </div>
             </div>
@@ -313,10 +309,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { usePlaces } from '@/composables/usePlaces'
 import type { Place } from '@/types/place'
 
 const router = useRouter()
 const route = useRoute()
+const { currentPlace, loading, error, fetchPlaceById } = usePlaces()
 
 const place = ref<Place | null>(null)
 const checkInDate = ref('')
@@ -325,46 +323,9 @@ const checkOutDate = ref('')
 // Heutiges Datum für min-Attribut
 const today = new Date().toISOString().split('T')[0]
 
-// Mock-Daten (später vom Backend)
-const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: 'Kulturraum Ottbergen',
-    description: 'Ein wunderschöner Veranstaltungsraum im Herzen von Ottbergen. Perfekt für Hochzeiten, Firmenfeiern und kulturelle Events. Mit moderner Ausstattung und historischem Charme.',
-    location: 'Ottbergen',
-    capacity: 100,
-    pricePerDay: 250
-  },
-  {
-    id: 2,
-    name: 'Gemeindesaal St. Marien',
-    description: 'Heller und freundlicher Saal mit Bühne und Nebenräumen. Ideal für Familienfeiern, Konzerte und Workshops. Küche und Sanitäranlagen vorhanden.',
-    location: 'Ottbergen Nord',
-    capacity: 60,
-    pricePerDay: 150
-  },
-  {
-    id: 3,
-    name: 'Dorfgemeinschaftshaus',
-    description: 'Traditionelles Gemeinschaftshaus mit rustikalem Charme. Bietet Platz für kleinere Veranstaltungen und Treffen. Voll ausgestattete Küche inklusive.',
-    location: 'Ottbergen Süd',
-    capacity: 40,
-    pricePerDay: 120
-  },
-  {
-    id: 4,
-    name: 'Scheune am Waldrand',
-    description: 'Umgebaute historische Scheune mit besonderem Ambiente. Perfekt für rustikale Hochzeiten und Gartenpartys. Große Außenfläche mit Gartenmöbeln verfügbar.',
-    location: 'Ottbergen West',
-    capacity: 80,
-    pricePerDay: 300
-  }
-]
-
 // Ort laden
-onMounted(() => {
+onMounted(async () => {
   const id = parseInt(route.params.id as string)
-  place.value = mockPlaces.find(p => p.id === id) || null
 
   // Wenn Daten von der vorherigen Seite übergeben wurden
   if (route.query.checkIn) {
@@ -374,7 +335,13 @@ onMounted(() => {
     checkOutDate.value = route.query.checkOut as string
   }
 
-  if (!place.value) {
+  // Ort von der API laden
+  const result = await fetchPlaceById(id)
+
+  if (result.success && result.place) {
+    place.value = result.place
+  } else {
+    console.error('Ort nicht gefunden:', result.message)
     // Wenn Ort nicht gefunden, zurück zur Suche
     router.push('/search')
   }

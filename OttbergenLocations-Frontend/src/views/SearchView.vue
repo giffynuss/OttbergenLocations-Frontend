@@ -57,10 +57,20 @@
       <div class="lg:w-1/2 overflow-y-auto p-6">
         <div class="max-w-4xl mx-auto">
           <h2 class="font-luxury text-3xl font-bold text-luxury-dark mb-8 tracking-luxury">
-            {{ searchResults.length }} Ergebnisse gefunden
+            {{ loading ? 'Lädt...' : `${searchResults.length} Ergebnisse gefunden` }}
           </h2>
 
-          <div v-if="searchResults.length > 0" class="space-y-6">
+          <!-- Fehleranzeige -->
+          <div v-if="error" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700">
+            <p class="font-medium">{{ error }}</p>
+          </div>
+
+          <!-- Ladeanzeige -->
+          <div v-if="loading" class="flex justify-center items-center py-16">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-luxury-gold"></div>
+          </div>
+
+          <div v-else-if="searchResults.length > 0" class="space-y-6">
             <!-- Längliche Karten mit Bild links (mit Overlay), Preis rechts -->
             <div
               v-for="place in searchResults"
@@ -139,7 +149,7 @@
           </div>
 
           <!-- Keine Ergebnisse -->
-          <div v-else class="text-center py-16">
+          <div v-else-if="!loading" class="text-center py-16">
             <svg class="w-32 h-32 mx-auto text-luxury-tan opacity-40 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -188,65 +198,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { usePlaces } from '@/composables/usePlaces'
+import type { Place } from '@/types/place'
 
 const router = useRouter()
-
-interface Place {
-  id: number
-  name: string
-  description: string
-  location: string
-  capacity: number
-  pricePerDay: number
-  latitude?: number
-  longitude?: number
-}
+const { places, loading, error, fetchPlaces } = usePlaces()
 
 // Suchformular
 const searchQuery = ref('')
 const checkInDate = ref('')
 const checkOutDate = ref('')
 
-// Mock-Daten für 4 Beispiel-Orte
-const mockPlaces: Place[] = [
-  {
-    id: 1,
-    name: 'Kulturraum Ottbergen',
-    description: 'Ein wunderschöner Veranstaltungsraum im Herzen von Ottbergen. Perfekt für Hochzeiten, Firmenfeiern und kulturelle Events. Mit moderner Ausstattung und historischem Charme.',
-    location: 'Ottbergen',
-    capacity: 100,
-    pricePerDay: 250
-  },
-  {
-    id: 2,
-    name: 'Gemeindesaal St. Marien',
-    description: 'Heller und freundlicher Saal mit Bühne und Nebenräumen. Ideal für Familienfeiern, Konzerte und Workshops. Küche und Sanitäranlagen vorhanden.',
-    location: 'Ottbergen Nord',
-    capacity: 60,
-    pricePerDay: 150
-  },
-  {
-    id: 3,
-    name: 'Dorfgemeinschaftshaus',
-    description: 'Traditionelles Gemeinschaftshaus mit rustikalem Charme. Bietet Platz für kleinere Veranstaltungen und Treffen. Voll ausgestattete Küche inklusive.',
-    location: 'Ottbergen Süd',
-    capacity: 40,
-    pricePerDay: 120
-  },
-  {
-    id: 4,
-    name: 'Scheune am Waldrand',
-    description: 'Umgebaute historische Scheune mit besonderem Ambiente. Perfekt für rustikale Hochzeiten und Gartenpartys. Große Außenfläche mit Gartenmöbeln verfügbar.',
-    location: 'Ottbergen West',
-    capacity: 80,
-    pricePerDay: 300
-  }
-]
-
-const searchResults = ref<Place[]>([...mockPlaces])
+const searchResults = ref<Place[]>([])
 const selectedPlace = ref<Place | null>(null)
+
+// Orte beim Laden der Komponente abrufen
+onMounted(async () => {
+  await performSearch()
+})
 
 // Berechnung der Anzahl der Tage
 const numberOfDays = computed(() => {
@@ -272,24 +243,35 @@ const calculateTotalPrice = () => {
 }
 
 // Suche durchführen
-const performSearch = () => {
-  if (!searchQuery.value.trim()) {
-    searchResults.value = [...mockPlaces]
-    return
+const performSearch = async () => {
+  const filters: any = {}
+
+  if (searchQuery.value.trim()) {
+    filters.search = searchQuery.value.trim()
   }
 
-  searchResults.value = mockPlaces.filter(place =>
-    place.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.location.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    place.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+  if (checkInDate.value) {
+    filters.checkIn = checkInDate.value
+  }
 
-  console.log('=== SUCHE DURCHGEFÜHRT ===')
-  console.log('Suchbegriff:', searchQuery.value)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Anzahl Ergebnisse:', searchResults.value.length)
-  console.log('=========================')
+  if (checkOutDate.value) {
+    filters.checkOut = checkOutDate.value
+  }
+
+  const result = await fetchPlaces(filters)
+
+  if (result.success) {
+    searchResults.value = result.places || []
+    console.log('=== SUCHE DURCHGEFÜHRT ===')
+    console.log('Suchbegriff:', searchQuery.value)
+    console.log('Check-in:', checkInDate.value)
+    console.log('Check-out:', checkOutDate.value)
+    console.log('Anzahl Ergebnisse:', searchResults.value.length)
+    console.log('=========================')
+  } else {
+    console.error('Fehler bei der Suche:', result.message)
+    searchResults.value = []
+  }
 }
 
 // Ort buchen
