@@ -37,13 +37,23 @@ export interface Provider {
   name: string
   email?: string // Nur in Detail-Ansichten verfügbar
   phone?: string // Nur in Detail-Ansichten verfügbar
+  bankAccount?: BankAccount // Bankverbindung für Überweisungen
   // ENTFERNT: memberSince, avatar, verified (Backend-Vereinfachung)
+}
+
+export interface BankAccount {
+  accountHolder: string
+  iban: string
+  bic: string
+  bankName: string
 }
 
 export interface DateRange {
   start: string // ISO date string
   end: string   // ISO date string
 }
+
+export type PaymentMethod = 'cash' | 'paypal' | 'transfer' | 'wero'
 
 export interface Booking {
   id: number
@@ -55,11 +65,31 @@ export interface Booking {
   checkOut: string     // Format: "YYYY-MM-DD" (ISO vom Backend)
   guests: number
   totalPrice: number   // Nur noch Gesamtpreis (Tage × Tagespreis)
+  paymentMethod?: PaymentMethod // Gewählte Zahlungsmethode
+  bookingReference?: string // Buchungsnummer
   // ENTFERNT: subtotal, serviceFee, tax (Backend-Vereinfachung)
   status: 'pending' | 'confirmed' | 'upcoming' | 'completed' | 'cancelled'
   cancelledAt?: string
   cancellationReason?: string
   // ENTFERNT: createdAt, updatedAt (nicht mehr vom Backend geliefert)
+}
+
+export interface BookingRequest {
+  placeId: number
+  checkIn: string
+  checkOut: string
+  guests: number
+  paymentMethod: PaymentMethod
+  userInfo: {
+    gender: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    street?: string
+    postalCode?: string
+    city?: string
+  }
 }
 
 // Hilfsfunktionen für Datumsberechnung
