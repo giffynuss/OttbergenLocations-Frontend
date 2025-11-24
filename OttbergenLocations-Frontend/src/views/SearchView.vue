@@ -7,15 +7,12 @@
           <!-- Suchfeld -->
           <div class="flex-1">
             <div class="relative">
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Suche einen Ort..."
-                class="input-luxury pl-12"
-                @keyup.enter="performSearch"
-              />
-              <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-luxury-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              <input v-model="searchQuery" type="text" placeholder="Suche einen Ort..." class="input-luxury pl-12"
+                @keyup.enter="performSearch" />
+              <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-luxury-tan" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
           </div>
@@ -23,28 +20,15 @@
           <!-- Datumswähler -->
           <div class="flex gap-4">
             <div>
-              <input
-                v-model="checkInDate"
-                type="date"
-                class="input-luxury"
-                @change="calculateTotalPrice"
-              />
+              <input v-model="checkInDate" type="date" class="input-luxury" @change="calculateTotalPrice" />
             </div>
             <div>
-              <input
-                v-model="checkOutDate"
-                type="date"
-                class="input-luxury"
-                @change="calculateTotalPrice"
-              />
+              <input v-model="checkOutDate" type="date" class="input-luxury" @change="calculateTotalPrice" />
             </div>
           </div>
 
           <!-- Such-Button -->
-          <button
-            @click="performSearch"
-            class="btn-luxury-primary"
-          >
+          <button @click="performSearch" class="btn-luxury-primary">
             Suchen
           </button>
         </div>
@@ -72,25 +56,27 @@
 
           <div v-else-if="searchResults.length > 0" class="space-y-6">
             <!-- Längliche Karten mit Bild links (mit Overlay), Preis rechts -->
-            <div
-              v-for="place in searchResults"
-              :key="place.id"
+            <div v-for="place in searchResults" :key="place.id"
               class="card-luxury overflow-hidden hover:shadow-luxury-xl transition-all duration-300 cursor-pointer flex flex-col md:flex-row"
-              @click="selectedPlace = place"
-              :class="{ 'ring-2 ring-luxury-gold': selectedPlace?.id === place.id }"
-            >
+              @click="selectedPlace = place" :class="{ 'ring-2 ring-luxury-gold': selectedPlace?.id === place.id }">
               <!-- Bild mit Text Overlay - Links, flexible Breite -->
-              <div class="flex-1 h-64 md:h-auto bg-gradient-to-br from-luxury-medium via-luxury-tan to-luxury-cream flex-shrink-0 relative overflow-hidden">
-                <!-- Dekoratives Muster im Hintergrund -->
-                <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%); background-size: 30px 30px; color: var(--color-luxury-dark);"></div>
-
-                <!-- Hintergrund Icon -->
-                <svg class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 text-luxury-dark opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                </svg>
+              <div
+                class="flex-1 h-64 md:h-auto bg-gradient-to-br from-luxury-medium via-luxury-tan to-luxury-cream flex-shrink-0 relative overflow-hidden">
+                <!-- Bild oder dekoratives Muster im Hintergrund -->
+                <div class="absolute inset-0 bg-cover bg-center" :style="place?.images && place.images.length > 0
+                  ? `background-image: url('${place.images[0]}'); opacity: 0.35;`
+                  : `background-image:
+                  linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%),
+                  linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%);
+                  background-size: 40px 40px;
+                  opacity: 0.20;
+                  color: var(--color-luxury-dark);`
+                  "></div>
 
                 <!-- Gradient Overlay für bessere Lesbarkeit -->
-                <div class="absolute inset-0 bg-gradient-to-t from-luxury-dark via-luxury-dark/70 to-transparent opacity-85"></div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-luxury-dark via-luxury-dark/50 to-transparent opacity-40">
+                </div>
 
                 <!-- Text Content über dem Bild -->
                 <div class="absolute inset-0 p-6 flex flex-col justify-end z-10">
@@ -106,16 +92,22 @@
 
                   <!-- Details/Tags -->
                   <div class="flex flex-wrap items-center gap-3 text-sm">
-                    <div class="flex items-center gap-2 bg-luxury-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-luxury-gold">
+                    <div
+                      class="flex items-center gap-2 bg-luxury-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-luxury-gold">
                       <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
                       </svg>
                       <span class="font-medium text-luxury-dark">{{ place.capacity }} Personen</span>
                     </div>
-                    <div class="flex items-center gap-2 bg-luxury-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-luxury-gold">
+                    <div
+                      class="flex items-center gap-2 bg-luxury-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-luxury-gold">
                       <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       </svg>
                       <span class="font-medium text-luxury-dark">{{ place.location }}</span>
                     </div>
@@ -124,24 +116,25 @@
               </div>
 
               <!-- Preis - Rechts, schmalere fixierte Breite -->
-              <div class="md:w-40 flex flex-col justify-between p-5 bg-luxury-light border-t md:border-t-0 md:border-l-2 border-luxury-medium">
+              <div
+                class="md:w-40 flex flex-col justify-between p-5 bg-luxury-light border-t md:border-t-0 md:border-l-2 border-luxury-medium">
                 <!-- Preis pro Tag -->
                 <div class="text-center">
                   <p class="text-xs text-luxury-brown mb-1 tracking-luxury uppercase">Pro Tag</p>
-                  <p class="font-luxury text-2xl font-bold text-luxury-dark tracking-luxury">{{ place.pricePerDay }}€</p>
+                  <p class="font-luxury text-2xl font-bold text-luxury-dark tracking-luxury">{{ place.pricePerDay }}€
+                  </p>
                 </div>
 
                 <!-- Gesamtpreis falls Datum ausgewählt -->
                 <div v-if="numberOfDays > 0" class="text-center mt-3 pt-3 border-t border-luxury-medium">
                   <p class="text-xs text-luxury-brown mb-1 tracking-luxury uppercase">{{ numberOfDays }} Tage</p>
-                  <p class="font-luxury text-xl font-bold text-luxury-gold tracking-luxury">{{ calculatePlaceTotal(place.pricePerDay) }}€</p>
+                  <p class="font-luxury text-xl font-bold text-luxury-gold tracking-luxury">{{
+                    calculatePlaceTotal(place.pricePerDay) }}€</p>
                 </div>
 
                 <!-- Buchen Button -->
-                <button
-                  @click.stop="bookPlace(place)"
-                  class="mt-4 w-full px-3 py-2.5 bg-luxury-dark text-luxury-ivory font-medium tracking-luxury hover:bg-luxury-brown transition-all duration-300 border border-luxury-dark text-xs"
-                >
+                <button @click.stop="bookPlace(place)"
+                  class="mt-4 w-full px-3 py-2.5 bg-luxury-dark text-luxury-ivory font-medium tracking-luxury hover:bg-luxury-brown transition-all duration-300 border border-luxury-dark text-xs">
                   BUCHEN
                 </button>
               </div>
@@ -150,8 +143,10 @@
 
           <!-- Keine Ergebnisse -->
           <div v-else-if="!loading" class="text-center py-16">
-            <svg class="w-32 h-32 mx-auto text-luxury-tan opacity-40 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <svg class="w-32 h-32 mx-auto text-luxury-tan opacity-40 mb-6" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <p class="font-luxury text-2xl text-luxury-brown mb-2">
               Keine Orte gefunden
@@ -167,15 +162,22 @@
       <div class="lg:w-1/2 bg-luxury-light relative">
         <div class="sticky top-24 h-[calc(100vh-180px)]">
           <!-- Placeholder wenn kein Ort ausgewählt -->
-          <div v-if="!selectedPlace" class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-luxury-light via-luxury-cream to-luxury-tan relative overflow-hidden">
+          <div v-if="!selectedPlace"
+            class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-luxury-light via-luxury-cream to-luxury-tan relative overflow-hidden">
             <!-- Dekoratives Muster im Hintergrund -->
-            <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%); background-size: 60px 60px; color: var(--color-luxury-dark);"></div>
+            <div class="absolute inset-0 opacity-10"
+              style="background-image: linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%); background-size: 60px 60px; color: var(--color-luxury-dark);">
+            </div>
 
             <!-- Image Icon -->
-            <svg class="w-40 h-40 text-luxury-brown opacity-30 mb-6 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            <svg class="w-40 h-40 text-luxury-brown opacity-30 mb-6 relative z-10" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+              </path>
             </svg>
-            <p class="font-luxury text-2xl text-luxury-dark font-bold mb-2 relative z-10 tracking-luxury">Bildergalerie</p>
+            <p class="font-luxury text-2xl text-luxury-dark font-bold mb-2 relative z-10 tracking-luxury">Bildergalerie
+            </p>
             <p class="text-luxury-brown text-base font-light relative z-10">Wählen Sie einen Ort aus</p>
           </div>
 
@@ -183,24 +185,30 @@
           <div v-else class="w-full h-full flex flex-col bg-white overflow-hidden">
             <!-- Header mit Ort-Informationen -->
             <div class="p-6 border-b-2 border-luxury-gold bg-luxury-ivory">
-              <h3 class="font-luxury text-2xl font-bold text-luxury-dark mb-3 tracking-luxury">{{ selectedPlace.name }}</h3>
+              <h3 class="font-luxury text-2xl font-bold text-luxury-dark mb-3 tracking-luxury">{{ selectedPlace.name }}
+              </h3>
               <div class="flex items-center gap-4 text-sm text-luxury-brown mb-3">
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   </svg>
                   <span class="font-medium">{{ selectedPlace.location }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-luxury-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
                   </svg>
                   <span class="font-medium">{{ selectedPlace.capacity }} Personen</span>
                 </div>
               </div>
               <div class="flex items-baseline gap-2">
-                <span class="font-luxury text-3xl font-bold text-luxury-gold tracking-luxury">{{ selectedPlace.pricePerDay }}€</span>
+                <span class="font-luxury text-3xl font-bold text-luxury-gold tracking-luxury">{{
+                  selectedPlace.pricePerDay }}€</span>
                 <span class="text-sm text-luxury-brown">/ Tag</span>
               </div>
             </div>
@@ -209,49 +217,46 @@
             <div class="flex-1 overflow-y-auto p-6">
               <div v-if="selectedPlace.images && selectedPlace.images.length > 0" class="space-y-4">
                 <!-- Bilder Grid -->
-                <div
-                  v-for="(image, index) in selectedPlace.images"
-                  :key="index"
-                  class="relative group cursor-pointer overflow-hidden border-2 border-luxury-light hover:border-luxury-gold transition-all duration-300"
-                >
-                  <img
-                    :src="image"
-                    :alt="`${selectedPlace.name} - Bild ${index + 1}`"
+                <div v-for="(image, index) in selectedPlace.images" :key="index"
+                  class="relative group cursor-pointer overflow-hidden border-2 border-luxury-light hover:border-luxury-gold transition-all duration-300">
+                  <img :src="image" :alt="`${selectedPlace.name} - Bild ${index + 1}`"
                     class="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-300"
-                    @error="handleImageError"
-                  />
+                    @error="handleImageError" />
                   <!-- Image Overlay on Hover -->
-                  <div class="absolute inset-0 bg-luxury-dark opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-luxury-dark/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="text-luxury-ivory text-sm font-medium">Bild {{ index + 1 }} von {{ selectedPlace.images.length }}</p>
+                  <div
+                    class="absolute inset-0 bg-luxury-dark opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+                  </div>
+                  <div
+                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-luxury-dark/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p class="text-luxury-ivory text-sm font-medium">Bild {{ index + 1 }} von {{
+                      selectedPlace.images.length }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Fallback wenn keine Bilder -->
               <div v-else class="flex flex-col items-center justify-center h-full">
-                <svg class="w-24 h-24 text-luxury-tan opacity-40 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <svg class="w-24 h-24 text-luxury-tan opacity-40 mb-4" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                  </path>
                 </svg>
                 <p class="text-luxury-brown">Keine Bilder verfügbar</p>
               </div>
             </div>
 
             <!-- Features falls vorhanden -->
-            <div v-if="selectedPlace.features && selectedPlace.features.length > 0" class="border-t border-luxury-light p-6 bg-luxury-ivory">
+            <div v-if="selectedPlace.features && selectedPlace.features.length > 0"
+              class="border-t border-luxury-light p-6 bg-luxury-ivory">
               <h4 class="font-luxury text-lg font-bold text-luxury-dark mb-3 tracking-luxury">Ausstattung</h4>
               <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="feature in selectedPlace.features.slice(0, 6)"
-                  :key="feature.id || feature.name"
-                  class="px-3 py-1.5 bg-luxury-light border border-luxury-tan text-luxury-dark text-xs font-medium"
-                >
+                <span v-for="feature in selectedPlace.features.slice(0, 6)" :key="feature.id || feature.name"
+                  class="px-3 py-1.5 bg-luxury-light border border-luxury-tan text-luxury-dark text-xs font-medium">
                   {{ feature.name }}
                 </span>
-                <span
-                  v-if="selectedPlace.features.length > 6"
-                  class="px-3 py-1.5 bg-luxury-gold/20 border border-luxury-gold text-luxury-dark text-xs font-medium"
-                >
+                <span v-if="selectedPlace.features.length > 6"
+                  class="px-3 py-1.5 bg-luxury-gold/20 border border-luxury-gold text-luxury-dark text-xs font-medium">
                   +{{ selectedPlace.features.length - 6 }} weitere
                 </span>
               </div>

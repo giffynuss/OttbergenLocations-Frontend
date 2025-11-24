@@ -13,17 +13,8 @@
           color: var(--color-luxury-dark);`
         "></div>
 
-      <!-- Hintergrund Icon -->
-      <svg
-        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 text-luxury-dark opacity-15"
-        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1"
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-        </path>
-      </svg>
-
       <!-- Gradient Overlay -->
-      <div class="absolute inset-0 bg-gradient-to-t from-luxury-dark/80 via-luxury-dark/40 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-luxury-dark/50 via-luxury-dark/40 to-transparent"></div>
 
       <!-- Zurück Button -->
       <button @click="goBack"
