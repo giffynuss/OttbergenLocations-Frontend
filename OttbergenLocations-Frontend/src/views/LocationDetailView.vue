@@ -396,19 +396,26 @@ const handleBooking = () => {
     return
   }
 
-  console.log('=== BUCHUNG DETAILS ===')
-  console.log('Ort ID:', place.value.id)
-  console.log('Ort:', place.value.name)
-  console.log('Check-in:', checkInDate.value)
-  console.log('Check-out:', checkOutDate.value)
-  console.log('Tage:', numberOfDays.value)
-  console.log('Gesamtpreis:', totalPrice.value, '€')
-  console.log('=====================')
+  // Buchungsdaten für die Checkout-Seite vorbereiten
+  const bookingData = {
+    placeId: place.value.id,
+    placeName: place.value.name,
+    placeLocation: place.value.location,
+    placeAddress: place.value.address,
+    placeCapacity: place.value.capacity,
+    checkIn: checkInDate.value,
+    checkOut: checkOutDate.value,
+    pricePerDay: place.value.pricePerDay,
+    providerId: place.value.provider?.id,
+    // Bankdaten des Anbieters falls vorhanden (für Überweisungen)
+    providerBankAccount: place.value.provider?.bankAccount
+  }
 
-  alert(`Buchungsanfrage wird verarbeitet!\n\n${place.value.name}\n${formatDate(checkInDate.value)} - ${formatDate(checkOutDate.value)}\n\nGesamtpreis: ${totalPrice.value}€\n\nSie werden zur Zahlungsseite weitergeleitet...`)
-
-  // Hier würde die Navigation zur Zahlungsseite erfolgen
-  // router.push({ name: 'checkout', params: { placeId: place.value.id } })
+  // Navigation zur Checkout-Seite mit Buchungsdaten
+  router.push({
+    name: 'checkout',
+    state: { bookingData }
+  })
 }
 </script>
 

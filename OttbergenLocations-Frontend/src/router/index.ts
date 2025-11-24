@@ -73,6 +73,12 @@ const routes: RouteRecordRaw[] = [
     name: 'agb',
     component: () => import('../views/AgbView.vue'),
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/checkout',
+    name: 'checkout',
+    component: () => import('../views/CheckoutView.vue'),
+    meta: { requiresAuth: false }
   }
 ]
 
