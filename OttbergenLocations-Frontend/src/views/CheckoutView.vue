@@ -310,7 +310,7 @@
                   class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
                 />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich akzeptiere die <a href="/agb" target="_blank" class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</a> *
+                  Ich akzeptiere die <router-link to="/agb" class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</router-link> *
                 </span>
               </label>
 
@@ -322,7 +322,7 @@
                   class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
                 />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich habe die <a href="/datenschutz" target="_blank" class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</a> zur Kenntnis genommen *
+                  Ich habe die <router-link to="/datenschutz" class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</router-link> zur Kenntnis genommen *
                 </span>
               </label>
 

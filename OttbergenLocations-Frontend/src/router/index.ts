@@ -75,6 +75,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/datenschutz',
+    name: 'datenschutz',
+    component: () => import('../views/DatenschutzView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/checkout',
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue'),

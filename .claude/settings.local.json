@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(nul)",
+      "Bash(npm run build:dev:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(dir /b /s *.tsx 2)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run dev:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
