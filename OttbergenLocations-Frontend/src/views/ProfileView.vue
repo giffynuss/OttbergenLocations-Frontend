@@ -331,7 +331,7 @@ const validateField = (fieldName: string) => {
         errors[fieldName] = ''
       }
       break
-
+      
     case 'email':
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!formData.email) {
@@ -399,6 +399,7 @@ const isFormValid = computed(() => {
 })
 
 const validatePassword = () => {
+  passwordErrors.new
   // Aktuelles Passwort
   if (!passwordData.current) {
     passwordErrors.current = "Aktuelles Passwort ist erforderlich";

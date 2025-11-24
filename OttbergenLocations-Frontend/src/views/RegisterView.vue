@@ -100,7 +100,7 @@
                   Passwort
                 </label>
                 <input id="password" v-model="formData.password" type="password" required class="input-luxury"
-                  placeholder="Mindestens 6 Zeichen" @blur="validateField('password')" />
+                  placeholder="Mindestens 10 Zeichen" @blur="validateField('password')" />
                 <p v-if="errors.password" class="mt-2 text-sm text-red-600 font-light">
                   {{ errors.password }}
                 </p>
@@ -327,8 +327,16 @@ const validateField = (fieldName: string) => {
     case "password":
       if (!formData.password) {
         errors.password = "Passwort ist erforderlich";
-      } else if (formData.password.length < 6) {
-        errors.password = "Passwort muss mindestens 6 Zeichen lang sein";
+      } else if (formData.password.length < 10) {
+        errors.password = "Passwort muss mindestens 10 Zeichen lang sein";
+      } else if (!/[a-z]/.test(formData.password)) {
+        errors.password = "Mindestens 1 Kleinbuchstabe muss enthalten sein";
+      } else if (!/[A-Z]/.test(formData.password)) {
+        errors.password = "Mindestens 1 Großbuchstabe muss enthalten sein";
+      } else if (!/\d/.test(formData.password)) {
+        errors.password = "Mindestens 1 Zahl muss enthalten sein";
+      } else if (!/[!@#$%^&*+(),.?\":{}|<>_\-]/.test(formData.password)) {
+        errors.password = "Mindestens 1 Sonderzeichen muss enthalten sein";
       } else {
         errors.password = "";
       }
@@ -416,6 +424,7 @@ const handleRegister = async () => {
     zipCode: formData.zipCode,
     city: formData.city,
     password: formData.password,
+    confirmPassword: formData.confirmPassword,
   });
 
   if (result.success) {
