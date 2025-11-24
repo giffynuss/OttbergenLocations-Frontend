@@ -4,8 +4,8 @@
     <div class="relative h-96 bg-gradient-to-br from-luxury-medium via-luxury-tan to-luxury-cream overflow-hidden">
       <!-- Bild oder dekoratives Muster im Hintergrund -->
       <div class="absolute inset-0 bg-cover bg-center" :style="place?.images && place.images.length > 0
-          ? `background-image: url('${place.images[0]}'); opacity: 0.35;`
-          : `background-image:
+        ? `background-image: url('${place.images[0]}'); opacity: 0.35;`
+        : `background-image:
           linear-gradient(45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%),
           linear-gradient(-45deg, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%);
           background-size: 40px 40px;
@@ -157,20 +157,34 @@
 
             <!-- Datumswähler -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div class="input-luxury bg-luxury-light text-luxury-dark opacity-80 cursor-not-allowed select-none">
+                {{ checkInDate ? formatDate(checkInDate) : 'Datum auswählen' }}
+              </div>
+
+              <div class="input-luxury bg-luxury-light text-luxury-dark opacity-80 cursor-not-allowed select-none">
+                {{ checkOutDate ? formatDate(checkOutDate) : 'Datum auswählen' }}
+              </div>
+            </div>
+
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label
                   class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Check-in</label>
-                <input v-model="checkInDate" type="date" :min="today" class="input-luxury" @change="calculateTotal" />
+                <input v-model="checkInDate" type="date" :min="today" class="input-luxury" disabled />
               </div>
               <div>
                 <label
                   class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Check-out</label>
-                <input v-model="checkOutDate" type="date" :min="checkInDate || today" class="input-luxury"
-                  @change="calculateTotal" />
+                <input v-model="checkOutDate" type="date" :min="checkInDate || today" class="input-luxury" disabled />
               </div>
+            </div> -->
+
+            <!-- V-Calendar -->
+            <div class="mt-6">
+              <v-calendar :attributes="calendarAttributes" is-expanded title-position="center" @dayclick="onDayClick" />
             </div>
 
-            <!-- Kalender Platzhalter -->
+            <!-- Kalender Platzhalter
             <div
               class="bg-luxury-light p-6 border border-luxury-tan flex flex-col items-center justify-center min-h-[200px]">
               <svg class="w-20 h-20 text-luxury-tan opacity-40 mb-4" fill="none" stroke="currentColor"
@@ -180,7 +194,7 @@
               </svg>
               <p class="font-luxury text-xl text-luxury-brown font-bold mb-2 tracking-luxury">Interaktiver Kalender</p>
               <p class="text-luxury-tan text-sm font-light">Verfügbare und gebuchte Tage werden hier angezeigt</p>
-            </div>
+            </div> -->
 
             <!-- Anzahl Tage und Preis -->
             <div v-if="numberOfDays > 0" class="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
@@ -210,7 +224,7 @@
                 </div>
                 <div class="flex-1">
                   <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-3">{{ place?.provider?.name || 'Anbieter'
-                  }}</h3>
+                    }}</h3>
 
                   <div class="space-y-2">
                     <div v-if="place?.provider?.email" class="flex items-center gap-3 text-luxury-brown">
@@ -283,7 +297,7 @@
                 <div class="flex justify-between items-baseline mb-2">
                   <span class="text-luxury-brown">Preis pro Tag</span>
                   <span class="font-luxury text-3xl font-bold text-luxury-dark tracking-luxury">{{ place?.pricePerDay
-                  }}€</span>
+                    }}€</span>
                 </div>
               </div>
 
@@ -380,6 +394,35 @@ L.Icon.Default.mergeOptions({
   shadowUrl
 });
 
+interface CalendarHighlightSegment {
+  fillMode?: string;
+  color?: string;
+}
+
+interface CalendarAttribute {
+  key: string | number;
+  highlight?: {
+    start?: CalendarHighlightSegment;
+    base?: CalendarHighlightSegment;
+    end?: CalendarHighlightSegment;
+  };
+  dates: {
+    start: Date;
+    end: Date;
+  };
+  disabled?: boolean;
+  popover?: {
+    label: string;
+  };
+}
+
+interface Booking {
+  bookingId: number;
+  checkIn: string;
+  checkOut: string;
+  status: string;
+}
+
 const router = useRouter()
 const route = useRoute()
 const { currentPlace, loading, error, fetchPlaceById } = usePlaces()
@@ -388,8 +431,58 @@ const place = ref<Place | null>(null)
 const checkInDate = ref('')
 const checkOutDate = ref('')
 
+const bookings = ref<Booking[]>([]);
+const calendarAttributes = ref<CalendarAttribute[]>([]);
+
 // Heutiges Datum für min-Attribut
 const today = new Date().toISOString().split('T')[0]
+
+const loadBookings = async () => {
+  if (!place.value) return;
+
+  const res = await fetch(
+    `http://localhost/OttbergenLocations-Backend/api/bookings/get_room_bookings.php?place_id=${place.value.id}`
+  );
+  const data = await res.json();
+
+  if (data.success) {
+    bookings.value = data.bookings.map((b: any) => ({
+      bookingId: b.booking_id,
+      checkIn: b.check_in,
+      checkOut: b.check_out,
+      status: b.status
+    }));
+    markUnavailableDays();
+  }
+};
+
+const markUnavailableDays = () => {
+  calendarAttributes.value = bookings.value.map(b => ({
+    key: b.bookingId,
+
+    // Diese Tage dürfen NICHT ausgewählt werden
+    disabled: true,
+
+    // Tooltip beim Hover
+    popover: {
+      label: "Ausgebucht"
+    },
+
+    // Wichtig: eigenes Highlight überschreibt das blaue Standard-Highlight
+    highlight: {
+      base: {
+        fillMode: "solid",
+        color: "#d1d5db" // → gray-300 = hellgrau
+      }
+    },
+
+    // Der Zeitraum der Buchung
+    dates: {
+      start: new Date(b.checkIn),
+      end: new Date(b.checkOut)
+    }
+  }));
+};
 
 const initMap = () => {
   if (!place.value) return;
@@ -429,6 +522,7 @@ onMounted(async () => {
   if (result.success && result.place) {
     place.value = result.place
     initMap();
+    await loadBookings();
   } else {
     console.error('Ort nicht gefunden:', result.message)
     // Wenn Ort nicht gefunden, zurück zur Suche
@@ -454,6 +548,34 @@ const totalPrice = computed(() => {
   if (!place.value) return 0
   return place.value.pricePerDay * numberOfDays.value
 })
+
+const onDayClick = (day: any) => {
+  const clickedDate = day.date;
+
+  // → ISO String generieren, weil deine Inputs date="YYYY-MM-DD" brauchen
+  const iso = clickedDate.toISOString().split("T")[0];
+
+  // Wenn kein Check-In gewählt → setze Check-In
+  if (!checkInDate.value) {
+    checkInDate.value = iso;
+    return;
+  }
+
+  // Wenn Check-In vorhanden, aber kein Check-Out → setze Check-Out
+  if (!checkOutDate.value) {
+    // Check-Out muss nach Check-In liegen
+    if (clickedDate <= new Date(checkInDate.value)) {
+      return; // falsch, nichts setzen
+    }
+
+    checkOutDate.value = iso;
+    return;
+  }
+
+  // Wenn beides gesetzt ist → neue Auswahl beginnen
+  checkInDate.value = iso;
+  checkOutDate.value = "";
+};
 
 // Funktionen
 const calculateTotal = () => {
