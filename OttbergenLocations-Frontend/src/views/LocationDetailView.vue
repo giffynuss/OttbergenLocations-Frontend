@@ -137,7 +137,10 @@
             </button>
 
             <!-- Bild -->
-            <img :src="place?.images?.[currentImage] ?? ''" class="max-h-[90%] max-w-[90%] rounded-lg shadow-xl" />
+            <img 
+              :src="place?.images?.[currentImage] ?? ''" 
+              class="w-full h-full object-contain max-h-screen max-w-screen m-0 p-0" 
+            />
 
             <!-- Navigation Right -->
             <button @click="nextImage" class="absolute right-6 text-white text-4xl font-bold select-none">
@@ -200,7 +203,7 @@
                 </div>
                 <div class="flex-1">
                   <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-3">{{ place?.provider?.name || 'Anbieter'
-                    }}</h3>
+                  }}</h3>
 
                   <div class="space-y-2">
                     <div v-if="place?.provider?.email" class="flex items-center gap-3 text-luxury-brown">
@@ -223,9 +226,14 @@
                 </div>
               </div>
 
-              <button class="w-full btn-luxury-secondary mt-4">
+              <a
+                v-if="place?.provider?.email"
+                :href="`mailto:${place.provider.email}`"
+                class="w-full btn-luxury-secondary mt-4 text-center py-2 px-4 bg-luxury-ivory text-luxury-dark font-medium tracking-luxury border border-luxury-dark transition-all duration-300 hover:bg-luxury-dark hover:text-luxury-ivory flex items-center justify-center"
+                style="margin-top: 1rem; align-self: flex-start;"
+              >
                 Anbieter kontaktieren
-              </button>
+              </a>
             </div>
           </section>
 
@@ -273,7 +281,7 @@
                 <div class="flex justify-between items-baseline mb-2">
                   <span class="text-luxury-brown">Preis pro Tag</span>
                   <span class="font-luxury text-3xl font-bold text-luxury-dark tracking-luxury">{{ place?.pricePerDay
-                    }}€</span>
+                  }}€</span>
                 </div>
               </div>
 
@@ -654,5 +662,12 @@ const previousImage = () => {
 </script>
 
 <style scoped>
-/* Zusätzliche Styles falls nötig */
+#map {
+  position: relative;
+  /* Sicherstellen, dass die Karte relativ zu ihrem Container bleibt */
+  z-index: 0;
+  /* Niedriger Z-Index, damit sie nicht über andere Elemente schwebt */
+  overflow: hidden;
+  /* Verhindert, dass Inhalte außerhalb des Containers sichtbar sind */
+}
 </style>
