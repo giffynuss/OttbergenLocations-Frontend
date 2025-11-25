@@ -51,3 +51,8 @@ npm install leaflet
 ```sh
 npm install --save-dev @types/leaflet
 ```
+
+## Install V-Calendar
+```sh
+npm install v-calendar
+```
