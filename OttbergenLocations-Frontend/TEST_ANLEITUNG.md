@@ -264,9 +264,9 @@ _(Optional: Was könnte noch besser sein?)_
 
 ## 🔗 Nützliche Links
 
-- **Backend API-Doku:** [API_OVERVIEW.md](../../OttbergenLocations-Backend/API_OVERVIEW.md)
-- **Backend Status:** [BACKEND_ANTWORT.md](BACKEND_ANTWORT.md)
-- **Frontend Status:** [FRONTEND_INTEGRATION_BEREIT.md](FRONTEND_INTEGRATION_BEREIT.md)
+- **Backend API-Doku:** [API_OVERVIEW.md](API_OVERVIEW.md)
+- **Design-Dokumentation:** [DESIGN_CHANGELOG.md](DESIGN_CHANGELOG.md)
+- **README:** [README.md](README.md)
 
 ---
 

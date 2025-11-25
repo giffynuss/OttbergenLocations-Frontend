@@ -5,16 +5,19 @@ Vue 3 + TypeScript + Vite Frontend für das OttbergenLocations Buchungssystem.
 ## 🚀 Features
 
 - **Vue 3 Composition API** mit TypeScript
-- **Tailwind CSS** für Styling
+- **Tailwind CSS** für luxuriöses Styling mit Custom-Farbschema
 - **Vue Router** für Navigation
+- **Leaflet** für interaktive Karten
+- **V-Calendar** für Datumauswahl und Kalenderansichten
 - **Booking System** mit E-Mail-Benachrichtigungen
 - **Status-Management** für Buchungen (pending, confirmed, rejected, etc.)
 - **Responsive Design** für alle Geräte
+- **Gast-Buchungen** ohne Login möglich
 
 ## 📋 Voraussetzungen
 
-- Node.js (v18 oder höher)
-- npm oder yarn
+- Node.js (^20.19.0 || >=22.12.0)
+- npm (wird mit Node.js installiert)
 - Backend-Server läuft auf `http://localhost/OttbergenLocations-Backend`
 
 ## 🛠️ Installation
@@ -102,24 +105,21 @@ const API_BASE_URL = 'http://localhost/OttbergenLocations-Backend/api'
 
 ## 📚 Dokumentation
 
-- [MAIL_SERVICE_FRONTEND_PLAN.md](MAIL_SERVICE_FRONTEND_PLAN.md) - Mail Service Implementierung
-- [BACKEND_ANPASSUNGEN.md](BACKEND_ANPASSUNGEN.md) - Backend-Änderungen
-- [MAIL_SERVICE_BACKEND_ANFORDERUNGEN.md](MAIL_SERVICE_BACKEND_ANFORDERUNGEN.md) - Backend-Anforderungen
+- [API_OVERVIEW.md](API_OVERVIEW.md) - Vollständige API-Dokumentation aller Backend-Endpoints
+- [TEST_ANLEITUNG.md](TEST_ANLEITUNG.md) - Umfassende Test-Anleitung mit Szenarien und Troubleshooting
+- [DESIGN_CHANGELOG.md](DESIGN_CHANGELOG.md) - Detaillierte Design-Dokumentation und Änderungshistorie
 
-## 🎨 Styling
+## 🎨 Styling & Design
 
-Das Projekt verwendet Tailwind CSS mit Custom Colors:
+Das Projekt verwendet ein luxuriöses Design mit Tailwind CSS:
 
-```js
-colors: {
-  'booking-dark-brown': '#4A3828',
-  'booking-medium-brown': '#8B7355',
-  'booking-light-brown': '#A68B6F',
-  'booking-beige': '#D4C4B0',
-  'booking-light-beige': '#F5F1E8',
-  'booking-gray-brown': '#6B5D52'
-}
-```
+### Farbschema
+- **Luxury-Palette**: Elegante Braun- und Creme-Töne
+- **Spitze Ecken**: Alle UI-Elemente ohne Rundungen für modernes, klares Design
+- **Typografie**: Playfair Display (Überschriften) + Lato (Fließtext)
+- **Dekorative Elemente**: Goldene Trennlinien und geometrische Muster
+
+Details siehe [DESIGN_CHANGELOG.md](DESIGN_CHANGELOG.md)
 
 ## 🧪 Development
 
@@ -129,11 +129,19 @@ colors: {
 npm run type-check
 ```
 
-### Linting
+### Format Code
 
 ```sh
-npm run lint
+npm run format
 ```
+
+### Build für Production
+
+```sh
+npm run build
+```
+
+Dies führt Type-Checking und Build parallel aus.
 
 ## 🌐 Empfohlenes IDE Setup
 
