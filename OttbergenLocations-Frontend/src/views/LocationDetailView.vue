@@ -451,9 +451,6 @@ const bookings = ref<Booking[]>([]);
 const calendarAttributes = ref<CalendarAttribute[]>([]);
 const selectedColor = ref('orange'); // Warme Farbe passend zum Luxury-Theme
 
-// Heutiges Datum für min-Attribut
-const today = new Date().toISOString().split('T')[0]
-
 const loadBookings = async () => {
   if (!place.value) return;
 
@@ -656,13 +653,21 @@ const onDayClick = (day: any) => {
   const dayNum = String(clickedDate.getDate()).padStart(2, '0');
   const iso = `${year}-${month}-${dayNum}`;
 
+  // Prüfe, ob der Tag in der Vergangenheit liegt
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  clickedDate.setHours(0, 0, 0, 0);
+
+  if (clickedDate < today) {
+    return; // Tag in der Vergangenheit, ignoriere den Klick
+  }
+
   // Prüfe, ob der Tag bereits gebucht ist
   const isBooked = bookings.value.some(booking => {
     const bookingStart = new Date(booking.checkIn);
     const bookingEnd = new Date(booking.checkOut);
     bookingStart.setHours(0, 0, 0, 0);
     bookingEnd.setHours(0, 0, 0, 0);
-    clickedDate.setHours(0, 0, 0, 0);
 
     return clickedDate >= bookingStart && clickedDate < bookingEnd;
   });
