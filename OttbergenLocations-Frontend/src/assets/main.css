@@ -66,3 +66,29 @@
     @apply transition-all duration-300;
   }
 }
+
+/* V-Calendar Custom Colors - Globale Überschreibung */
+.vc-highlight-content-solid.vc-brown {
+  background-color: #a68a64 !important; /* luxury-tan */
+}
+
+.vc-highlight-content-solid.vc-yellow,
+.vc-highlight-content-light.vc-yellow {
+  background-color: #d4c4b0 !important; /* luxury-cream */
+}
+
+/* Überschreibe V-Calendar CSS-Variablen global */
+.vc-brown {
+  --vc-accent-600: #a68a64 !important;
+  --vc-accent-700: #5c442f !important;
+}
+
+.vc-yellow {
+  --vc-accent-200: #d4c4b0 !important;
+  --vc-accent-600: #8b6f47 !important;
+}
+
+/* Falls Orange verwendet wird, überschreibe auch das */
+.vc-orange {
+  --vc-accent-600: #d4c4b0 !important;
+}

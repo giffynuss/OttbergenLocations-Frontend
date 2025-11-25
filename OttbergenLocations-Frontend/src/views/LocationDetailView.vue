@@ -169,11 +169,29 @@
             <!-- V-Calendar -->
             <div class="mt-6 overflow-x-auto">
               <v-calendar :panels="3" :rows="1" :columns="3" is-expanded title-position="center" :color="selectedColor"
-                :attributes="calendarAttributes" @dayclick="onDayClick" />
+                :attributes="allCalendarAttributes" @dayclick="onDayClick" />
+            </div>
+
+            <!-- Warnung bei Buchungskonflikt -->
+            <div v-if="hasBookingConflict && conflictingBooking" class="mt-6 p-4 bg-red-50 border-2 border-red-500">
+              <div class="flex items-start gap-3">
+                <svg class="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div class="flex-1">
+                  <h4 class="font-bold text-red-700 mb-1">Buchung nicht möglich</h4>
+                  <p class="text-sm text-red-600">
+                    Der gewählte Zeitraum überschneidet sich mit einer bestehenden Buchung
+                    ({{ formatDate(conflictingBooking.checkIn) }} - {{ formatDate(conflictingBooking.checkOut) }}).
+                    Bitte wählen Sie einen anderen Zeitraum.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <!-- Anzahl Tage und Preis -->
-            <div v-if="numberOfDays > 0" class="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
+            <div v-if="numberOfDays > 0 && !hasBookingConflict" class="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
               <div class="flex justify-between items-center">
                 <span class="text-luxury-brown font-medium">Ausgewählte Tage:</span>
                 <span class="font-luxury text-xl font-bold text-luxury-dark">{{ numberOfDays }} {{ numberOfDays === 1 ?
@@ -294,8 +312,22 @@
                 </div>
               </div>
 
+              <!-- Warnung bei Buchungskonflikt in der Sidebar -->
+              <div v-if="hasBookingConflict && numberOfDays > 0" class="mb-6 p-4 bg-red-50 border-2 border-red-500">
+                <div class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <p class="font-bold text-red-700 text-sm mb-1">Zeitraum nicht verfügbar</p>
+                    <p class="text-xs text-red-600">Dieser Zeitraum überschneidet sich mit einer bestehenden Buchung.</p>
+                  </div>
+                </div>
+              </div>
+
               <!-- Vereinfachte Preisberechnung -->
-              <div v-if="numberOfDays > 0" class="mb-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
+              <div v-else-if="numberOfDays > 0" class="mb-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
                 <div class="flex justify-between items-center text-luxury-brown mb-3">
                   <span class="text-sm">{{ place?.pricePerDay }}€ × {{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' :
                     'Tage' }}</span>
@@ -311,9 +343,9 @@
               </div>
 
               <!-- Buchen Button -->
-              <button @click="handleBooking" :disabled="!checkInDate || !checkOutDate"
+              <button @click="handleBooking" :disabled="!checkInDate || !checkOutDate || hasBookingConflict"
                 class="w-full btn-luxury-primary disabled:opacity-50 disabled:cursor-not-allowed">
-                {{ checkInDate && checkOutDate ? 'Jetzt buchen' : 'Datum wählen' }}
+                {{ hasBookingConflict ? 'Zeitraum nicht verfügbar' : (checkInDate && checkOutDate ? 'Jetzt buchen' : 'Datum wählen') }}
               </button>
 
               <!-- Zusätzliche Infos -->
@@ -409,7 +441,7 @@ const checkOutDate = ref('')
 
 const bookings = ref<Booking[]>([]);
 const calendarAttributes = ref<CalendarAttribute[]>([]);
-const selectedColor = ref('red');
+const selectedColor = ref('orange'); // Warme Farbe passend zum Luxury-Theme
 
 // Heutiges Datum für min-Attribut
 const today = new Date().toISOString().split('T')[0]
@@ -435,7 +467,7 @@ const loadBookings = async () => {
 
 const markUnavailableDays = () => {
   calendarAttributes.value = bookings.value.map(b => ({
-    key: b.bookingId,
+    key: `booking-${b.bookingId}`,
 
     // Diese Tage dürfen NICHT ausgewählt werden
     disabled: true,
@@ -445,11 +477,19 @@ const markUnavailableDays = () => {
       label: "Ausgebucht"
     },
 
-    // Wichtig: eigenes Highlight überschreibt das blaue Standard-Highlight
+    // Luxury-Tan Farbe mit Braun-Akzent für gebuchte Tage
     highlight: {
+      start: {
+        fillMode: 'solid',
+        color: 'brown'
+      },
       base: {
-        fillMode: "solid",
-        color: "#d1d5db" // → gray-300 = hellgrau
+        fillMode: 'solid',
+        color: 'brown'
+      },
+      end: {
+        fillMode: 'solid',
+        color: 'brown'
       }
     },
 
@@ -461,6 +501,38 @@ const markUnavailableDays = () => {
   }));
   console.log('Kalender-Attribute:', calendarAttributes.value);  // Logge die calendarAttributes
 };
+
+// Computed Property für alle Kalender-Attribute (gebuchte + ausgewählte Tage)
+const allCalendarAttributes = computed(() => {
+  const attributes = [...calendarAttributes.value];
+
+  // Füge den ausgewählten Zeitraum hinzu, wenn beide Daten gesetzt sind
+  if (checkInDate.value && checkOutDate.value) {
+    attributes.push({
+      key: 'selected-range',
+      highlight: {
+        start: {
+          fillMode: 'solid',
+          color: 'yellow'
+        },
+        base: {
+          fillMode: 'light',
+          color: 'yellow'
+        },
+        end: {
+          fillMode: 'solid',
+          color: 'yellow'
+        }
+      },
+      dates: {
+        start: new Date(checkInDate.value),
+        end: new Date(checkOutDate.value)
+      }
+    });
+  }
+
+  return attributes;
+});
 
 const initMap = () => {
   if (!place.value) return;
@@ -527,14 +599,70 @@ const totalPrice = computed(() => {
   return place.value.pricePerDay * numberOfDays.value
 })
 
+// Prüfe, ob der ausgewählte Zeitraum mit bestehenden Buchungen kollidiert
+const hasBookingConflict = computed(() => {
+  if (!checkInDate.value || !checkOutDate.value) return false;
+
+  const selectedStart = new Date(checkInDate.value);
+  const selectedEnd = new Date(checkOutDate.value);
+  selectedStart.setHours(0, 0, 0, 0);
+  selectedEnd.setHours(0, 0, 0, 0);
+
+  return bookings.value.some(booking => {
+    const bookingStart = new Date(booking.checkIn);
+    const bookingEnd = new Date(booking.checkOut);
+    bookingStart.setHours(0, 0, 0, 0);
+    bookingEnd.setHours(0, 0, 0, 0);
+
+    // Prüfe auf Überschneidungen: Zeiträume überschneiden sich, wenn:
+    // selectedStart < bookingEnd UND selectedEnd > bookingStart
+    return selectedStart < bookingEnd && selectedEnd > bookingStart;
+  });
+})
+
+// Finde die konkrete Buchung, die mit dem ausgewählten Zeitraum kollidiert
+const conflictingBooking = computed(() => {
+  if (!checkInDate.value || !checkOutDate.value) return null;
+
+  const selectedStart = new Date(checkInDate.value);
+  const selectedEnd = new Date(checkOutDate.value);
+  selectedStart.setHours(0, 0, 0, 0);
+  selectedEnd.setHours(0, 0, 0, 0);
+
+  return bookings.value.find(booking => {
+    const bookingStart = new Date(booking.checkIn);
+    const bookingEnd = new Date(booking.checkOut);
+    bookingStart.setHours(0, 0, 0, 0);
+    bookingEnd.setHours(0, 0, 0, 0);
+
+    return selectedStart < bookingEnd && selectedEnd > bookingStart;
+  });
+})
+
 const onDayClick = (day: any) => {
   const clickedDate = day.date;
 
-  // Setze die Zeit auf Mitternacht (00:00 Uhr), um sicherzustellen, dass es keine Zeitverschiebung gibt
-  clickedDate.setHours(0, 0, 0, 0);
+  // Verwende lokale Datums-Formatierung statt UTC, um Timezone-Probleme zu vermeiden
+  const year = clickedDate.getFullYear();
+  const month = String(clickedDate.getMonth() + 1).padStart(2, '0');
+  const dayNum = String(clickedDate.getDate()).padStart(2, '0');
+  const iso = `${year}-${month}-${dayNum}`;
 
-  // → ISO String generieren, weil deine Inputs date="YYYY-MM-DD" brauchen
-  const iso = clickedDate.toISOString().split("T")[0];
+  // Prüfe, ob der Tag bereits gebucht ist
+  const isBooked = bookings.value.some(booking => {
+    const bookingStart = new Date(booking.checkIn);
+    const bookingEnd = new Date(booking.checkOut);
+    bookingStart.setHours(0, 0, 0, 0);
+    bookingEnd.setHours(0, 0, 0, 0);
+    clickedDate.setHours(0, 0, 0, 0);
+
+    return clickedDate >= bookingStart && clickedDate < bookingEnd;
+  });
+
+  // Wenn der Tag gebucht ist, ignoriere den Klick
+  if (isBooked) {
+    return;
+  }
 
   // Wenn kein Check-In gewählt → setze Check-In
   if (!checkInDate.value) {
@@ -653,6 +781,41 @@ const previousImage = () => {
 }
 </script>
 
-<style scoped>
-/* Zusätzliche Styles falls nötig */
+<style>
+/* Custom V-Calendar Farben für das Luxury-Theme */
+/* Sehr hohe Spezifität um Standard-Styles zu überschreiben */
+
+/* Gebuchte Tage - Luxury Tan mit Braun-Akzent */
+:deep(.vc-day-box-center-center) :deep(.vc-day-content.vc-focusable.vc-focus.vc-attr.vc-highlight-content-solid.vc-brown),
+:deep(.vc-highlight-content-solid.vc-brown) {
+  background-color: #a68a64 !important; /* luxury-tan */
+}
+
+/* Ausgewählter Zeitraum - Luxury Cream */
+:deep(.vc-day-box-center-center) :deep(.vc-day-content.vc-focusable.vc-focus.vc-attr.vc-highlight-content-light.vc-yellow),
+:deep(.vc-day-box-center-center) :deep(.vc-day-content.vc-focusable.vc-focus.vc-attr.vc-highlight-content-solid.vc-yellow),
+:deep(.vc-highlight-content-light.vc-yellow),
+:deep(.vc-highlight-content-solid.vc-yellow) {
+  background-color: #d4c4b0 !important; /* luxury-cream */
+}
+
+/* Überschreibe ALLE orange Farben direkt aus dem index CSS */
+:deep(.vc-light.vc-attr),
+:deep(.vc-attr.vc-highlight-content-solid),
+:deep(.vc-highlight-content-solid) {
+  --vc-accent-600: #d4c4b0 !important;
+}
+
+/* Setze die Farben für Brown explizit */
+:deep(.vc-brown),
+:deep(.vc-brown.vc-attr) {
+  --vc-accent-600: #a68a64 !important;
+}
+
+/* Setze die Farben für Yellow explizit */
+:deep(.vc-yellow),
+:deep(.vc-yellow.vc-attr) {
+  --vc-accent-200: #d4c4b0 !important;
+  --vc-accent-600: #8b6f47 !important;
+}
 </style>
