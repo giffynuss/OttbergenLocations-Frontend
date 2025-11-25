@@ -13,7 +13,18 @@
         </router-link>
       </div>
 
-      <div v-if="bookings.length > 0" class="space-y-6">
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-12">
+        <p class="text-booking-gray-brown text-lg">Lädt Buchungen...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <p class="text-red-800">{{ error }}</p>
+      </div>
+
+      <!-- Bookings List -->
+      <div v-else-if="bookings.length > 0" class="space-y-6">
         <div
           v-for="booking in bookings"
           :key="booking.id"
@@ -23,28 +34,23 @@
           <div class="flex justify-between items-start mb-4">
             <div>
               <h3 class="text-2xl font-semibold text-booking-dark-brown mb-2">
-                {{ booking.title }}
+                {{ booking.placeName }}
               </h3>
               <p class="text-booking-gray-brown">
-                {{ booking.location }}
+                {{ booking.placeLocation }}
               </p>
             </div>
-            <span
-              class="px-3 py-1 rounded-full text-sm font-medium"
-              :class="getStatusClass(booking.status)"
-            >
-              {{ getStatusText(booking.status) }}
-            </span>
+            <BookingStatusBadge :status="booking.status" />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <p class="text-sm text-booking-gray-brown">Check-in</p>
-              <p class="font-medium text-booking-dark-brown">{{ booking.checkIn }}</p>
+              <p class="font-medium text-booking-dark-brown">{{ formatDateGerman(booking.checkIn) }}</p>
             </div>
             <div>
               <p class="text-sm text-booking-gray-brown">Check-out</p>
-              <p class="font-medium text-booking-dark-brown">{{ booking.checkOut }}</p>
+              <p class="font-medium text-booking-dark-brown">{{ formatDateGerman(booking.checkOut) }}</p>
             </div>
             <div>
               <p class="text-sm text-booking-gray-brown">Gäste</p>
@@ -52,16 +58,34 @@
             </div>
           </div>
 
+          <!-- Info-Box für pending Status -->
+          <div v-if="booking.status === 'pending'" class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p class="text-sm text-yellow-800">
+              ⏳ Ihre Buchungsanfrage wurde an den Anbieter gesendet.
+              Sie erhalten eine E-Mail, sobald der Anbieter die Buchung bestätigt.
+            </p>
+          </div>
+
+          <!-- Info-Box für rejected Status -->
+          <div v-if="booking.status === 'rejected'" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-sm text-red-800 font-medium">Grund der Ablehnung:</p>
+            <p class="text-sm text-red-700 mt-1">{{ booking.cancellationReason || 'Keine Angabe' }}</p>
+          </div>
+
           <div class="flex justify-between items-center pt-4 border-t border-booking-light-beige">
             <span class="text-2xl font-bold text-booking-dark-brown">
-              {{ booking.price }}€
+              {{ booking.totalPrice.toFixed(2) }}€
             </span>
             <div class="space-x-2">
-              <button class="text-booking-medium-brown hover:text-booking-dark-brown font-medium">
+              <router-link
+                :to="`/bookings/${booking.id}`"
+                class="text-booking-medium-brown hover:text-booking-dark-brown font-medium"
+              >
                 Details
-              </button>
+              </router-link>
               <button
-                v-if="booking.status === 'upcoming'"
+                v-if="booking.status === 'confirmed' || booking.status === 'pending'"
+                @click="handleCancelBooking(booking.id)"
                 class="text-red-600 hover:text-red-800 font-medium"
               >
                 Stornieren
@@ -71,6 +95,7 @@
         </div>
       </div>
 
+      <!-- Empty State -->
       <div v-else class="text-center py-12">
         <p class="text-booking-gray-brown text-lg mb-4">
           Sie haben noch keine Buchungen.
@@ -87,66 +112,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted } from 'vue'
+import { useBookings } from '@/composables/useBookings'
+import { formatDateGerman } from '@/types/place'
+import BookingStatusBadge from '@/components/BookingStatusBadge.vue'
 
-interface Booking {
-  id: number
-  title: string
-  location: string
-  checkIn: string
-  checkOut: string
-  guests: number
-  price: number
-  status: 'upcoming' | 'completed' | 'cancelled'
-}
+const { bookings, loading, error, fetchMyBookings, cancelBooking } = useBookings()
 
-const bookings = ref<Booking[]>([
-  {
-    id: 1,
-    title: 'Gemütliches Apartment',
-    location: 'Berlin Mitte',
-    checkIn: '15.12.2025',
-    checkOut: '20.12.2025',
-    guests: 2,
-    price: 445,
-    status: 'upcoming'
-  },
-  {
-    id: 2,
-    title: 'Strandhaus',
-    location: 'Ostsee',
-    checkIn: '01.08.2025',
-    checkOut: '15.08.2025',
-    guests: 4,
-    price: 1890,
-    status: 'completed'
-  }
-])
-
-const getStatusText = (status: string) => {
-  const statusMap: Record<string, string> = {
-    upcoming: 'Bevorstehend',
-    completed: 'Abgeschlossen',
-    cancelled: 'Storniert'
-  }
-  return statusMap[status] || status
-}
-
-const getStatusClass = (status: string) => {
-  const classMap: Record<string, string> = {
-    upcoming: 'bg-green-100 text-green-800',
-    completed: 'bg-booking-beige text-booking-dark-brown',
-    cancelled: 'bg-red-100 text-red-800'
-  }
-  return classMap[status] || ''
-}
+onMounted(async () => {
+  await fetchMyBookings()
+})
 
 const getStatusBorderColor = (status: string) => {
   const borderMap: Record<string, string> = {
-    upcoming: 'border-green-500',
+    pending: 'border-yellow-500',
+    confirmed: 'border-green-500',
+    rejected: 'border-red-500',
+    upcoming: 'border-blue-500',
     completed: 'border-booking-medium-brown',
-    cancelled: 'border-red-500'
+    cancelled: 'border-gray-500'
   }
   return borderMap[status] || 'border-booking-medium-brown'
+}
+
+const handleCancelBooking = async (bookingId: number) => {
+  if (!confirm('Möchten Sie diese Buchung wirklich stornieren?')) return
+
+  const reason = prompt('Bitte geben Sie einen Grund für die Stornierung an (optional):')
+  const result = await cancelBooking(bookingId, reason || undefined)
+
+  if (result.success) {
+    alert('Buchung erfolgreich storniert')
+    await fetchMyBookings() // Liste aktualisieren
+  } else {
+    alert('Fehler beim Stornieren: ' + result.message)
+  }
 }
 </script>

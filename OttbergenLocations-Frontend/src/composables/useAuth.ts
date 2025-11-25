@@ -83,20 +83,38 @@ export function useAuth() {
   };
 
   const register = async (formData: any) => {
-    const res = await fetch("http://localhost/OttbergenLocations-Backend/api/auth/register.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-      credentials: "include"
-    });
+    try {
+      const res = await fetch("http://localhost/OttbergenLocations-Backend/api/auth/register.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        credentials: "include"
+      });
 
-    const data = await res.json();
+      // Check if response is JSON
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("Backend returned non-JSON response:", await res.text());
+        return {
+          success: false,
+          message: "Server-Fehler: Die Registrierung konnte nicht verarbeitet werden. Bitte überprüfen Sie die Backend-Konfiguration."
+        };
+      }
 
-    if (data.success) {
-      return { success: true };
+      const data = await res.json();
+
+      if (data.success) {
+        return { success: true };
+      }
+
+      return { success: false, message: data.message || "Registrierung fehlgeschlagen" };
+    } catch (error) {
+      console.error("Registration error:", error);
+      return {
+        success: false,
+        message: "Netzwerkfehler: Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+      };
     }
-
-    return { success: false, message: data.message };
   }
 
   const becomeProvider = async () => {
