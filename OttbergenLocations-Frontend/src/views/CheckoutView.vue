@@ -310,7 +310,7 @@
                   class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
                 />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich akzeptiere die <a href="/agb" target="_blank" class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</a> *
+                  Ich akzeptiere die <router-link to="/agb" class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</router-link> *
                 </span>
               </label>
 
@@ -322,7 +322,7 @@
                   class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
                 />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich habe die <a href="/datenschutz" target="_blank" class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</a> zur Kenntnis genommen *
+                  Ich habe die <router-link to="/datenschutz" class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</router-link> zur Kenntnis genommen *
                 </span>
               </label>
 
@@ -509,8 +509,8 @@
               <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
-          <h3 class="font-luxury text-3xl font-bold text-luxury-dark mb-2">Buchung erfolgreich!</h3>
-          <p class="text-luxury-brown">Ihre Buchungsanfrage wurde gesendet</p>
+          <h3 class="font-luxury text-3xl font-bold text-luxury-dark mb-2">Buchungsanfrage gesendet!</h3>
+          <p class="text-luxury-brown">Ihre Anfrage wartet auf Bestätigung</p>
         </div>
 
         <div class="space-y-4 mb-6 p-6 bg-luxury-light border border-luxury-tan">
@@ -520,14 +520,29 @@
           <p class="text-sm text-luxury-brown">
             Eine Bestätigungsmail wurde an <strong>{{ userInfo.email }}</strong> gesendet.
           </p>
-          <p class="text-sm text-luxury-brown">
-            Der Anbieter wurde über Ihre Buchungsanfrage informiert und wird sich in Kürze bei Ihnen melden.
-          </p>
+        </div>
+
+        <!-- Wichtiger Hinweis zum Mail-Service -->
+        <div class="mb-6 p-4 bg-yellow-50 border border-yellow-400">
+          <div class="flex items-start gap-3">
+            <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-sm">
+              <p class="font-bold text-yellow-900 mb-2">Wichtig: Buchung wartet auf Bestätigung</p>
+              <p class="text-yellow-800 mb-2">
+                Der Anbieter wurde per E-Mail über Ihre Anfrage benachrichtigt und wird diese prüfen.
+              </p>
+              <p class="text-yellow-800">
+                <strong>Sie erhalten eine Bestätigungs-E-Mail mit allen Details</strong>, sobald der Anbieter Ihre Buchung annimmt.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div v-if="paymentMethod === 'transfer'" class="mb-6 p-4 bg-luxury-gold/20 border border-luxury-gold">
           <p class="text-sm text-luxury-dark">
-            <strong>Nächster Schritt:</strong> Bitte überweisen Sie den Betrag von <strong>{{ totalPrice }}€</strong> mit der Buchungsnummer als Verwendungszweck.
+            <strong>Nach Bestätigung:</strong> Sie erhalten die Überweisungsdaten per E-Mail. Bitte überweisen Sie dann den Betrag von <strong>{{ totalPrice }}€</strong> mit der Buchungsnummer als Verwendungszweck.
           </p>
         </div>
 
