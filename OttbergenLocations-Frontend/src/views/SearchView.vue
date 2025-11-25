@@ -213,23 +213,36 @@
               </div>
             </div>
 
-            <!-- Bildergalerie - scrollbar -->
-            <div class="flex-1 overflow-y-auto p-6">
-              <div v-if="selectedPlace.images && selectedPlace.images.length > 0" class="space-y-4">
-                <!-- Bilder Grid -->
-                <div v-for="(image, index) in selectedPlace.images" :key="index"
-                  class="relative group cursor-pointer overflow-hidden border-2 border-luxury-light hover:border-luxury-gold transition-all duration-300">
-                  <img :src="image" :alt="`${selectedPlace.name} - Bild ${index + 1}`"
-                    class="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-300"
+            <!-- Bildergalerie - Einzelbild/Carousel -->
+            <div class="flex-1 min-h-0">
+              <div v-if="selectedPlace.images && selectedPlace.images.length > 0" class="w-full h-full relative flex items-center justify-center">
+                <!-- Bildbereich: flexibel, füllt den verfügbaren Platz (kein zusätzlicher Innenabstand) -->
+                <div
+                  class="w-full h-full relative flex items-center justify-center overflow-hidden"
+                  tabindex="0"
+                  role="region"
+                  aria-label="Bildergalerie"
+                  @click="onImageClick"
+                  @keydown.left.prevent="prevImage"
+                  @keydown.right.prevent="nextImage"
+                  @touchstart.passive="handleTouchStart"
+                  @touchend.passive="handleTouchEnd">
+
+                  <img :src="selectedPlace.images[currentImageIndex]"
+                    :alt="`${selectedPlace.name} - Bild ${currentImageIndex + 1}`"
+                    class="w-full h-full object-cover transition-transform duration-300"
                     @error="handleImageError" />
-                  <!-- Image Overlay on Hover -->
+
+                  <!-- Linke und rechte Klickflächen (transparent) -->
+                  <button class="absolute inset-y-0 left-0 w-1/2 bg-transparent z-20" @click.stop.prevent="prevImage"
+                    aria-label="Vorheriges Bild"></button>
+                  <button class="absolute inset-y-0 right-0 w-1/2 bg-transparent z-20" @click.stop.prevent="nextImage"
+                    aria-label="Nächstes Bild"></button>
+
+                  <!-- Zähler / Overlay -->
                   <div
-                    class="absolute inset-0 bg-luxury-dark opacity-0 group-hover:opacity-20 transition-opacity duration-300">
-                  </div>
-                  <div
-                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-luxury-dark/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="text-luxury-ivory text-sm font-medium">Bild {{ index + 1 }} von {{
-                      selectedPlace.images.length }}</p>
+                    class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-luxury-dark/60 text-luxury-ivory text-sm px-3 py-1 rounded-md z-30">
+                    Bild {{ currentImageIndex + 1 }} / {{ selectedPlace.images.length }}
                   </div>
                 </div>
               </div>
@@ -269,7 +282,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePlaces } from '@/composables/usePlaces'
 import type { Place } from '@/types/place'
@@ -284,6 +297,15 @@ const checkOutDate = ref('')
 
 const searchResults = ref<Place[]>([])
 const selectedPlace = ref<Place | null>(null)
+
+// Carousel state
+const currentImageIndex = ref(0)
+const touchStartX = ref<number | null>(null)
+
+// Reset index when selecting a new place
+watch(selectedPlace, (newVal) => {
+  currentImageIndex.value = 0
+})
 
 // Orte beim Laden der Komponente abrufen
 onMounted(async () => {
@@ -365,6 +387,48 @@ const handleImageError = (event: Event) => {
   // Fallback zu einem Platzhalter-Bild
   target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect fill="%23f5f3f0" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="%23a8998e"%3EBild nicht verfügbar%3C/text%3E%3C/svg%3E'
 }
+
+// Carousel controls
+const prevImage = () => {
+  if (!selectedPlace.value || !selectedPlace.value.images) return
+  const len = selectedPlace.value.images.length
+  currentImageIndex.value = (currentImageIndex.value - 1 + len) % len
+}
+
+const nextImage = () => {
+  if (!selectedPlace.value || !selectedPlace.value.images) return
+  const len = selectedPlace.value.images.length
+  currentImageIndex.value = (currentImageIndex.value + 1) % len
+}
+
+const onImageClick = (event: MouseEvent) => {
+  // Wechseln abhängig davon, ob links oder rechts auf das Bild geklickt wurde
+  const target = event.currentTarget as HTMLElement
+  const rect = target.getBoundingClientRect()
+  const clickX = event.clientX - rect.left
+  if (clickX < rect.width / 2) {
+    prevImage()
+  } else {
+    nextImage()
+  }
+}
+
+const handleTouchStart = (event: TouchEvent) => {
+  touchStartX.value = event.touches[0]?.clientX ?? null
+}
+
+const handleTouchEnd = (event: TouchEvent) => {
+  if (touchStartX.value === null) return
+  const endX = event.changedTouches[0]?.clientX ?? null
+  if (endX === null) return
+  const diff = endX - touchStartX.value
+  // Threshold
+  if (Math.abs(diff) > 30) {
+    if (diff > 0) prevImage()
+    else nextImage()
+  }
+  touchStartX.value = null
+}
 </script>
 
 <style scoped>
@@ -372,6 +436,7 @@ const handleImageError = (event: Event) => {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
