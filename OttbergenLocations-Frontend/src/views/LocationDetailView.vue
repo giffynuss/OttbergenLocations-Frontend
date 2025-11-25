@@ -166,35 +166,11 @@
               </div>
             </div>
 
-            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div>
-                <label
-                  class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Check-in</label>
-                <input v-model="checkInDate" type="date" :min="today" class="input-luxury" disabled />
-              </div>
-              <div>
-                <label
-                  class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Check-out</label>
-                <input v-model="checkOutDate" type="date" :min="checkInDate || today" class="input-luxury" disabled />
-              </div>
-            </div> -->
-
             <!-- V-Calendar -->
-            <div class="mt-6">
-              <v-calendar :attributes="calendarAttributes" is-expanded title-position="center" @dayclick="onDayClick" />
+            <div class="mt-6 overflow-x-auto">
+              <v-calendar :panels="3" :rows="1" :columns="3" is-expanded title-position="center" :color="selectedColor"
+                :attributes="calendarAttributes" @dayclick="onDayClick" />
             </div>
-
-            <!-- Kalender Platzhalter
-            <div
-              class="bg-luxury-light p-6 border border-luxury-tan flex flex-col items-center justify-center min-h-[200px]">
-              <svg class="w-20 h-20 text-luxury-tan opacity-40 mb-4" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <p class="font-luxury text-xl text-luxury-brown font-bold mb-2 tracking-luxury">Interaktiver Kalender</p>
-              <p class="text-luxury-tan text-sm font-light">Verfügbare und gebuchte Tage werden hier angezeigt</p>
-            </div> -->
 
             <!-- Anzahl Tage und Preis -->
             <div v-if="numberOfDays > 0" class="mt-6 p-4 bg-luxury-gold/10 border border-luxury-gold">
@@ -433,6 +409,7 @@ const checkOutDate = ref('')
 
 const bookings = ref<Booking[]>([]);
 const calendarAttributes = ref<CalendarAttribute[]>([]);
+const selectedColor = ref('red');
 
 // Heutiges Datum für min-Attribut
 const today = new Date().toISOString().split('T')[0]
@@ -482,6 +459,7 @@ const markUnavailableDays = () => {
       end: new Date(b.checkOut)
     }
   }));
+  console.log('Kalender-Attribute:', calendarAttributes.value);  // Logge die calendarAttributes
 };
 
 const initMap = () => {
@@ -552,6 +530,9 @@ const totalPrice = computed(() => {
 const onDayClick = (day: any) => {
   const clickedDate = day.date;
 
+  // Setze die Zeit auf Mitternacht (00:00 Uhr), um sicherzustellen, dass es keine Zeitverschiebung gibt
+  clickedDate.setHours(0, 0, 0, 0);
+
   // → ISO String generieren, weil deine Inputs date="YYYY-MM-DD" brauchen
   const iso = clickedDate.toISOString().split("T")[0];
 
@@ -576,11 +557,6 @@ const onDayClick = (day: any) => {
   checkInDate.value = iso;
   checkOutDate.value = "";
 };
-
-// Funktionen
-const calculateTotal = () => {
-  // Wird automatisch durch computed properties berechnet
-}
 
 const formatDate = (dateString: string) => {
   if (!dateString) return ''
