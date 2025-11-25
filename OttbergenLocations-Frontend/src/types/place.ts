@@ -68,9 +68,12 @@ export interface Booking {
   paymentMethod?: PaymentMethod // Gewählte Zahlungsmethode
   bookingReference?: string // Buchungsnummer
   // ENTFERNT: subtotal, serviceFee, tax (Backend-Vereinfachung)
-  status: 'pending' | 'confirmed' | 'upcoming' | 'completed' | 'cancelled'
+  status: 'pending' | 'confirmed' | 'rejected' | 'upcoming' | 'completed' | 'cancelled'
   cancelledAt?: string
-  cancellationReason?: string
+  cancellationReason?: string // Wird auch für rejected-Grund verwendet
+  providerNotifiedAt?: string
+  userConfirmedAt?: string
+  // Backend nutzt cancellationReason für Ablehnungen
   // ENTFERNT: createdAt, updatedAt (nicht mehr vom Backend geliefert)
 }
 
@@ -113,4 +116,24 @@ export const formatDateGerman = (dateString: string): string => {
     month: 'long',
     day: 'numeric'
   })
+}
+
+// Status-Labels für UI
+export const BookingStatusLabels: Record<string, string> = {
+  pending: 'Ausstehend',
+  confirmed: 'Bestätigt',
+  rejected: 'Abgelehnt',
+  upcoming: 'Bevorstehend',
+  completed: 'Abgeschlossen',
+  cancelled: 'Storniert'
+}
+
+// Status-Farben für Tailwind CSS
+export const BookingStatusColors: Record<string, string> = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-green-100 text-green-800',
+  rejected: 'bg-red-100 text-red-800',
+  upcoming: 'bg-blue-100 text-blue-800',
+  completed: 'bg-gray-100 text-gray-800',
+  cancelled: 'bg-gray-100 text-gray-600'
 }
