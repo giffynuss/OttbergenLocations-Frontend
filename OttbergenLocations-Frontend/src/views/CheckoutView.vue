@@ -3,10 +3,8 @@
     <!-- Header -->
     <div class="bg-luxury-dark text-luxury-ivory py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          @click="goBack"
-          class="mb-4 px-4 py-2 bg-luxury-ivory/10 backdrop-blur-sm text-luxury-ivory font-medium tracking-luxury hover:bg-luxury-ivory/20 transition-all duration-300 border border-luxury-gold flex items-center gap-2"
-        >
+        <button @click="goBack"
+          class="mb-4 px-4 py-2 bg-luxury-ivory/10 backdrop-blur-sm text-luxury-ivory font-medium tracking-luxury hover:bg-luxury-ivory/20 transition-all duration-300 border border-luxury-gold flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -26,27 +24,28 @@
           <section class="card-luxury p-8">
             <h2 class="font-luxury text-3xl font-bold text-luxury-dark mb-6 tracking-luxury flex items-center gap-3">
               <svg class="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
               </svg>
               Zahlungsart wählen
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- In Bar vor Ort -->
-              <button
-                @click="paymentMethod = 'cash'"
-                :class="[
-                  'p-6 border-2 transition-all duration-300 text-left',
-                  paymentMethod === 'cash'
-                    ? 'border-luxury-gold bg-luxury-gold/10'
-                    : 'border-luxury-tan hover:border-luxury-medium'
-                ]"
-              >
+              <button @click="paymentMethod = 'cash'" :class="[
+                'p-6 border-2 transition-all duration-300 text-left',
+                paymentMethod === 'cash'
+                  ? 'border-luxury-gold bg-luxury-gold/10'
+                  : 'border-luxury-tan hover:border-luxury-medium'
+              ]">
                 <div class="flex items-start justify-between mb-3">
                   <svg class="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                    </path>
                   </svg>
-                  <div v-if="paymentMethod === 'cash'" class="w-6 h-6 bg-luxury-gold rounded-full flex items-center justify-center">
+                  <div v-if="paymentMethod === 'cash'"
+                    class="w-6 h-6 bg-luxury-gold rounded-full flex items-center justify-center">
                     <svg class="w-4 h-4 text-luxury-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -57,15 +56,14 @@
               </button>
 
               <!-- PayPal (Temporär deaktiviert) -->
-              <button
-                disabled
-                :class="[
-                  'p-6 border-2 transition-all duration-300 text-left opacity-50 cursor-not-allowed relative'
-                ]"
-              >
+              <button disabled :class="[
+                'p-6 border-2 transition-all duration-300 text-left opacity-50 cursor-not-allowed relative'
+              ]">
                 <div class="flex items-start justify-between mb-3">
                   <svg class="w-8 h-8 text-luxury-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
                   </svg>
                   <span class="px-2 py-1 bg-luxury-tan text-luxury-ivory text-xs font-bold tracking-luxury">
                     DEMNÄCHST
@@ -76,20 +74,19 @@
               </button>
 
               <!-- Überweisung -->
-              <button
-                @click="paymentMethod = 'transfer'"
-                :class="[
-                  'p-6 border-2 transition-all duration-300 text-left',
-                  paymentMethod === 'transfer'
-                    ? 'border-luxury-gold bg-luxury-gold/10'
-                    : 'border-luxury-tan hover:border-luxury-medium'
-                ]"
-              >
+              <button @click="paymentMethod = 'transfer'" :class="[
+                'p-6 border-2 transition-all duration-300 text-left',
+                paymentMethod === 'transfer'
+                  ? 'border-luxury-gold bg-luxury-gold/10'
+                  : 'border-luxury-tan hover:border-luxury-medium'
+              ]">
                 <div class="flex items-start justify-between mb-3">
                   <svg class="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
                   </svg>
-                  <div v-if="paymentMethod === 'transfer'" class="w-6 h-6 bg-luxury-gold rounded-full flex items-center justify-center">
+                  <div v-if="paymentMethod === 'transfer'"
+                    class="w-6 h-6 bg-luxury-gold rounded-full flex items-center justify-center">
                     <svg class="w-4 h-4 text-luxury-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -100,15 +97,13 @@
               </button>
 
               <!-- Wero (Temporär deaktiviert) -->
-              <button
-                disabled
-                :class="[
-                  'p-6 border-2 transition-all duration-300 text-left opacity-50 cursor-not-allowed relative'
-                ]"
-              >
+              <button disabled :class="[
+                'p-6 border-2 transition-all duration-300 text-left opacity-50 cursor-not-allowed relative'
+              ]">
                 <div class="flex items-start justify-between mb-3">
                   <svg class="w-8 h-8 text-luxury-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                   </svg>
                   <span class="px-2 py-1 bg-luxury-tan text-luxury-ivory text-xs font-bold tracking-luxury">
                     DEMNÄCHST
@@ -124,7 +119,8 @@
           <section v-if="paymentMethod" class="card-luxury p-8">
             <h2 class="font-luxury text-3xl font-bold text-luxury-dark mb-6 tracking-luxury flex items-center gap-3">
               <svg class="w-8 h-8 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
               Ihre Kontaktdaten
             </h2>
@@ -132,84 +128,65 @@
             <div class="space-y-6">
               <!-- Gästeanzahl -->
               <div>
-                <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Anzahl Gäste *</label>
-                <input
-                  v-model.number="guests"
-                  type="number"
-                  min="1"
-                  :max="bookingData.placeCapacity || 100"
-                  required
-                  class="input-luxury w-full md:w-1/3"
-                  placeholder="1"
-                />
-                <p class="text-xs text-luxury-brown mt-1">Maximal {{ bookingData.placeCapacity || 100 }} Gäste möglich</p>
+                <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Anzahl Gäste
+                  *</label>
+                <input v-model.number="guests" type="number" min="1" :max="bookingData.placeCapacity || 100" required
+                  class="input-luxury w-full md:w-1/3" placeholder="1" />
+                <p class="text-xs text-luxury-brown mt-1">Maximal {{ bookingData.placeCapacity || 100 }} Gäste möglich
+                </p>
               </div>
 
               <!-- Anrede -->
               <div>
-                <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Anrede *</label>
+                <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Anrede
+                  *</label>
                 <div class="grid grid-cols-3 gap-3">
-                  <button
-                    v-for="genderOption in genderOptions"
-                    :key="genderOption.value"
-                    @click="userInfo.gender = genderOption.value"
-                    :class="[
+                  <button v-for="genderOption in genderOptions" :key="genderOption.value"
+                    @click="userInfo.gender = genderOption.value" :class="[
                       'py-3 px-4 border-2 transition-all duration-300',
                       userInfo.gender === genderOption.value
                         ? 'border-luxury-gold bg-luxury-gold/10 text-luxury-dark font-bold'
                         : 'border-luxury-tan text-luxury-brown hover:border-luxury-medium'
-                    ]"
-                  >
+                    ]">
                     {{ genderOption.label }}
                   </button>
                 </div>
+                <p v-if="errors.gender" class="text-sm text-red-500 mt-1">{{ errors.gender }}</p>
               </div>
 
               <!-- Vorname und Nachname -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Vorname *</label>
-                  <input
-                    v-model="userInfo.firstName"
-                    type="text"
-                    required
-                    class="input-luxury"
-                    placeholder="Max"
-                  />
+                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Vorname
+                    *</label>
+                  <input v-model="userInfo.firstName" type="text" required class="input-luxury" placeholder="Max"
+                    @blur="validateField('firstName')" />
+                  <p v-if="errors.firstName" class="text-sm text-red-500 mt-1">{{ errors.firstName }}</p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Nachname *</label>
-                  <input
-                    v-model="userInfo.lastName"
-                    type="text"
-                    required
-                    class="input-luxury"
-                    placeholder="Mustermann"
-                  />
+                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Nachname
+                    *</label>
+                  <input v-model="userInfo.lastName" type="text" required class="input-luxury" placeholder="Mustermann"
+                    @blur="validateField('lastName')" />
+                  <p v-if="errors.lastName" class="text-sm text-red-500 mt-1">{{ errors.lastName }}</p>
                 </div>
               </div>
 
               <!-- E-Mail und Telefon -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">E-Mail *</label>
-                  <input
-                    v-model="userInfo.email"
-                    type="email"
-                    required
-                    class="input-luxury"
-                    placeholder="max.mustermann@example.com"
-                  />
+                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">E-Mail
+                    *</label>
+                  <input v-model="userInfo.email" type="email" required class="input-luxury"
+                    placeholder="max.mustermann@example.com" @blur="validateField('email')" />
+                  <p v-if="errors.email" class="text-sm text-red-500 mt-1">{{ errors.email }}</p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Telefon *</label>
-                  <input
-                    v-model="userInfo.phone"
-                    type="tel"
-                    required
-                    class="input-luxury"
-                    placeholder="+49 123 456789"
-                  />
+                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Telefon
+                    *</label>
+                  <input v-model="userInfo.phone" type="tel" required class="input-luxury" placeholder="+49 123 456789"
+                    @blur="validateField('phone')" />
+                  <p v-if="errors.phone" class="text-sm text-red-500 mt-1">{{ errors.phone }}</p>
                 </div>
               </div>
 
@@ -217,37 +194,37 @@
               <div v-if="paymentMethod === 'transfer'" class="pt-6 border-t border-luxury-light space-y-6">
                 <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-4">Rechnungsadresse</h3>
 
-                <div>
-                  <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Straße und Hausnummer *</label>
-                  <input
-                    v-model="userInfo.street"
-                    type="text"
-                    required
-                    class="input-luxury"
-                    placeholder="Musterstraße 123"
-                  />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Straße
+                      *</label>
+                    <input v-model="userInfo.street" type="text" required class="input-luxury"
+                      placeholder="Musterstraße" @blur="validateField('street')" />
+                    <p v-if="errors.street" class="text-sm text-red-500 mt-1">{{ errors.street }}</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Hausnummer
+                      *</label>
+                    <input v-model="userInfo.houseNumber" type="text" required class="input-luxury" placeholder="123"
+                      @blur="validateField('houseNumber')" />
+                    <p v-if="errors.houseNumber" class="text-sm text-red-500 mt-1">{{ errors.houseNumber }}</p>
+                  </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">PLZ *</label>
-                    <input
-                      v-model="userInfo.postalCode"
-                      type="text"
-                      required
-                      class="input-luxury"
-                      placeholder="12345"
-                    />
+                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">PLZ
+                      *</label>
+                    <input v-model="userInfo.postalCode" type="text" required class="input-luxury" placeholder="12345"
+                      @blur="validateField('postalCode')" />
+                    <p v-if="errors.postalCode" class="text-sm text-red-500 mt-1">{{ errors.postalCode }}</p>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Stadt *</label>
-                    <input
-                      v-model="userInfo.city"
-                      type="text"
-                      required
-                      class="input-luxury"
-                      placeholder="Musterstadt"
-                    />
+                    <label class="block text-sm font-medium text-luxury-brown mb-2 tracking-luxury uppercase">Stadt
+                      *</label>
+                    <input v-model="userInfo.city" type="text" required class="input-luxury" placeholder="Musterstadt"
+                      @blur="validateField('city')" />
+                    <p v-if="errors.city" class="text-sm text-red-500 mt-1">{{ errors.city }}</p>
                   </div>
                 </div>
               </div>
@@ -258,7 +235,9 @@
           <section v-if="paymentMethod === 'transfer'" class="card-luxury p-8 bg-luxury-light">
             <h2 class="font-luxury text-2xl font-bold text-luxury-dark mb-6 tracking-luxury flex items-center gap-3">
               <svg class="w-7 h-7 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                </path>
               </svg>
               Überweisungsdaten
             </h2>
@@ -291,7 +270,8 @@
 
               <div class="mt-6 p-4 bg-luxury-gold/20 border border-luxury-gold">
                 <p class="text-sm text-luxury-dark">
-                  <strong>Wichtig:</strong> Bitte geben Sie unbedingt die Buchungsnummer als Verwendungszweck an, damit Ihre Zahlung zugeordnet werden kann.
+                  <strong>Wichtig:</strong> Bitte geben Sie unbedingt die Buchungsnummer als Verwendungszweck an, damit
+                  Ihre Zahlung zugeordnet werden kann.
                 </p>
               </div>
             </div>
@@ -304,35 +284,30 @@
             <div class="space-y-4">
               <!-- AGB -->
               <label class="flex items-start gap-3 cursor-pointer group">
-                <input
-                  v-model="agreements.agb"
-                  type="checkbox"
-                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
-                />
+                <input v-model="agreements.agb" type="checkbox"
+                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold" />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich akzeptiere die <router-link to="/agb" class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</router-link> *
+                  Ich akzeptiere die <router-link to="/agb"
+                    class="text-luxury-gold hover:underline font-medium">Allgemeinen Geschäftsbedingungen</router-link>
+                  *
                 </span>
               </label>
 
               <!-- Datenschutz -->
               <label class="flex items-start gap-3 cursor-pointer group">
-                <input
-                  v-model="agreements.privacy"
-                  type="checkbox"
-                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
-                />
+                <input v-model="agreements.privacy" type="checkbox"
+                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold" />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
-                  Ich habe die <router-link to="/datenschutz" class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</router-link> zur Kenntnis genommen *
+                  Ich habe die <router-link to="/datenschutz"
+                    class="text-luxury-gold hover:underline font-medium">Datenschutzerklärung</router-link> zur Kenntnis
+                  genommen *
                 </span>
               </label>
 
               <!-- Stornierungsbedingungen -->
               <label class="flex items-start gap-3 cursor-pointer group">
-                <input
-                  v-model="agreements.cancellation"
-                  type="checkbox"
-                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold"
-                />
+                <input v-model="agreements.cancellation" type="checkbox"
+                  class="mt-1 w-5 h-5 text-luxury-gold border-luxury-tan focus:ring-luxury-gold" />
                 <span class="text-luxury-brown group-hover:text-luxury-dark transition-colors">
                   Ich habe die Stornierungsbedingungen verstanden (kostenlose Stornierung bis 48h vor Anreise) *
                 </span>
@@ -341,7 +316,9 @@
 
             <div class="mt-6 p-4 bg-luxury-light border border-luxury-tan">
               <p class="text-sm text-luxury-brown">
-                <strong>Hinweis:</strong> Nach Abschluss der Buchung wird eine Bestätigungsmail an den Anbieter gesendet. Der Anbieter wird Ihre Buchungsanfrage prüfen und Ihnen eine Bestätigung oder Ablehnung per E-Mail zusenden.
+                <strong>Hinweis:</strong> Nach Abschluss der Buchung wird eine Bestätigungsmail an den Anbieter
+                gesendet. Der Anbieter wird Ihre Buchungsanfrage prüfen und Ihnen eine Bestätigung oder Ablehnung per
+                E-Mail zusenden.
               </p>
             </div>
           </section>
@@ -358,8 +335,10 @@
                 <h3 class="font-luxury text-xl font-bold text-luxury-dark mb-2">{{ bookingData.placeName }}</h3>
                 <div class="flex items-center gap-2 text-luxury-brown text-sm">
                   <svg class="w-4 h-4 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   </svg>
                   <span>{{ bookingData.placeLocation }}</span>
                 </div>
@@ -377,7 +356,8 @@
                 </div>
                 <div>
                   <p class="text-xs text-luxury-brown mb-1 tracking-luxury uppercase">Dauer</p>
-                  <p class="font-medium text-luxury-dark">{{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' : 'Tage' }}</p>
+                  <p class="font-medium text-luxury-dark">{{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' : 'Tage' }}
+                  </p>
                 </div>
                 <div>
                   <p class="text-xs text-luxury-brown mb-1 tracking-luxury uppercase">Buchungsnummer</p>
@@ -388,7 +368,8 @@
               <!-- Preisaufschlüsselung -->
               <div class="space-y-3 mb-6">
                 <div class="flex justify-between items-center text-luxury-brown">
-                  <span class="text-sm">{{ bookingData.pricePerDay }}€ × {{ numberOfDays }} {{ numberOfDays === 1 ? 'Tag' : 'Tage' }}</span>
+                  <span class="text-sm">{{ bookingData.pricePerDay }}€ × {{ numberOfDays }} {{ numberOfDays === 1 ?
+                    'Tag' : 'Tage' }}</span>
                   <span class="font-medium">{{ bookingData.pricePerDay * numberOfDays }}€</span>
                 </div>
               </div>
@@ -410,31 +391,34 @@
               </div>
 
               <!-- Buchen Button -->
-              <button
-                @click="handleCheckout"
-                :disabled="!canCheckout"
-                class="w-full btn-luxury-primary mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button @click="handleCheckout" :disabled="!canCheckout"
+                class="w-full btn-luxury-primary mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
                 {{ checkoutButtonText }}
               </button>
 
               <!-- Hinweise -->
               <div class="mt-6 space-y-3 text-sm text-luxury-brown">
                 <div class="flex items-start gap-2">
-                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <span>Buchungsbestätigung per E-Mail</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <span>Sichere Datenübertragung</span>
                 </div>
                 <div class="flex items-start gap-2">
-                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  <svg class="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <span>Anbieter wird benachrichtigt</span>
                 </div>
@@ -449,7 +433,8 @@
     <div v-if="showPayPalModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div class="bg-luxury-ivory max-w-md w-full p-8 border-2 border-luxury-gold">
         <h3 class="font-luxury text-2xl font-bold text-luxury-dark mb-4">PayPal Zahlung</h3>
-        <p class="text-luxury-brown mb-6">Dies ist eine Simulation. In der echten Anwendung würden Sie jetzt zur PayPal-Website weitergeleitet.</p>
+        <p class="text-luxury-brown mb-6">Dies ist eine Simulation. In der echten Anwendung würden Sie jetzt zur
+          PayPal-Website weitergeleitet.</p>
 
         <div class="space-y-4 mb-6 p-4 bg-luxury-light border border-luxury-tan">
           <p class="text-sm text-luxury-brown">
@@ -475,7 +460,8 @@
     <div v-if="showWeroModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div class="bg-luxury-ivory max-w-md w-full p-8 border-2 border-luxury-gold">
         <h3 class="font-luxury text-2xl font-bold text-luxury-dark mb-4">Wero Echtzeitüberweisung</h3>
-        <p class="text-luxury-brown mb-6">Dies ist eine Simulation. In der echten Anwendung würden Sie jetzt zur Wero-App weitergeleitet.</p>
+        <p class="text-luxury-brown mb-6">Dies ist eine Simulation. In der echten Anwendung würden Sie jetzt zur
+          Wero-App weitergeleitet.</p>
 
         <div class="space-y-4 mb-6 p-4 bg-luxury-light border border-luxury-tan">
           <p class="text-sm text-luxury-brown">
@@ -506,7 +492,8 @@
         <div class="text-center mb-6">
           <div class="w-20 h-20 bg-luxury-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-10 h-10 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
           <h3 class="font-luxury text-3xl font-bold text-luxury-dark mb-2">Buchungsanfrage gesendet!</h3>
@@ -515,7 +502,8 @@
 
         <div class="space-y-4 mb-6 p-6 bg-luxury-light border border-luxury-tan">
           <p class="text-sm text-luxury-brown">
-            <strong>Buchungsnummer:</strong> <span class="font-mono text-luxury-gold font-bold">{{ bookingReference }}</span>
+            <strong>Buchungsnummer:</strong> <span class="font-mono text-luxury-gold font-bold">{{ bookingReference
+            }}</span>
           </p>
           <p class="text-sm text-luxury-brown">
             Eine Bestätigungsmail wurde an <strong>{{ userInfo.email }}</strong> gesendet.
@@ -525,8 +513,10 @@
         <!-- Wichtiger Hinweis zum Mail-Service -->
         <div class="mb-6 p-4 bg-yellow-50 border border-yellow-400">
           <div class="flex items-start gap-3">
-            <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <div class="text-sm">
               <p class="font-bold text-yellow-900 mb-2">Wichtig: Buchung wartet auf Bestätigung</p>
@@ -534,7 +524,8 @@
                 Der Anbieter wurde per E-Mail über Ihre Anfrage benachrichtigt und wird diese prüfen.
               </p>
               <p class="text-yellow-800">
-                <strong>Sie erhalten eine Bestätigungs-E-Mail mit allen Details</strong>, sobald der Anbieter Ihre Buchung annimmt.
+                <strong>Sie erhalten eine Bestätigungs-E-Mail mit allen Details</strong>, sobald der Anbieter Ihre
+                Buchung annimmt.
               </p>
             </div>
           </div>
@@ -542,7 +533,8 @@
 
         <div v-if="paymentMethod === 'transfer'" class="mb-6 p-4 bg-luxury-gold/20 border border-luxury-gold">
           <p class="text-sm text-luxury-dark">
-            <strong>Nach Bestätigung:</strong> Sie erhalten die Überweisungsdaten per E-Mail. Bitte überweisen Sie dann den Betrag von <strong>{{ totalPrice }}€</strong> mit der Buchungsnummer als Verwendungszweck.
+            <strong>Nach Bestätigung:</strong> Sie erhalten die Überweisungsdaten per E-Mail. Bitte überweisen Sie dann
+            den Betrag von <strong>{{ totalPrice }}€</strong> mit der Buchungsnummer als Verwendungszweck.
           </p>
         </div>
 
@@ -559,10 +551,13 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { formatDateGerman, calculateNumberOfDays, type PaymentMethod, type BankAccount } from '@/types/place'
 import { useBookings } from '@/composables/useBookings'
+import { useAuth } from '@/composables/useAuth';
+import { useValidation } from '@/composables/useValidation'
 
 const router = useRouter()
 const route = useRoute()
 const { createBooking, loading: bookingLoading, error: bookingError } = useBookings()
+const { fetchUser, currentUser } = useAuth();
 
 // Buchungsdaten aus der Navigation
 interface BookingData {
@@ -608,6 +603,7 @@ const userInfo = ref({
   email: '',
   phone: '',
   street: '',
+  houseNumber: '',
   postalCode: '',
   city: ''
 })
@@ -660,10 +656,10 @@ const paymentMethodLabel = computed(() => {
   return paymentMethod.value ? labels[paymentMethod.value] : ''
 })
 
-const canCheckout = computed(() => {
-  if (!paymentMethod.value) return false
+// Validierung initialisieren
+const { errors, validateField, validateAllFieldsForced, hasErrors, clearTouched } = useValidation(userInfo.value)
 
-  // Basis-Validierung
+const canCheckout = computed(() => {
   const basicValid =
     userInfo.value.gender &&
     userInfo.value.firstName &&
@@ -674,16 +670,18 @@ const canCheckout = computed(() => {
     agreements.value.privacy &&
     agreements.value.cancellation
 
-  // Zusätzliche Validierung für Überweisung
   if (paymentMethod.value === 'transfer') {
-    return basicValid &&
+    return (
+      basicValid &&
       userInfo.value.street &&
+      userInfo.value.houseNumber &&
       userInfo.value.postalCode &&
       userInfo.value.city
+    )
   }
 
-  return basicValid
-})
+  return basicValid;
+});
 
 const checkoutButtonText = computed(() => {
   if (!paymentMethod.value) return 'Zahlungsart wählen'
@@ -752,6 +750,7 @@ const processBooking = async () => {
       email: userInfo.value.email,
       phone: userInfo.value.phone,
       street: userInfo.value.street || undefined,
+      houseNumber: userInfo.value.houseNumber || undefined,
       postalCode: userInfo.value.postalCode || undefined,
       city: userInfo.value.city || undefined
     }
@@ -787,7 +786,7 @@ const goToMyBookings = () => {
 }
 
 // Daten aus Navigation laden
-onMounted(() => {
+onMounted(async () => {
   // Prüfe ob Buchungsdaten übergeben wurden
   const state = history.state as { bookingData?: BookingData }
 
@@ -817,6 +816,29 @@ onMounted(() => {
       router.push('/search')
     }
   }
+
+  // Lade Benutzerdaten
+  await fetchUser();
+
+  if (currentUser.value) {
+    userInfo.value = {
+      ...userInfo.value,
+      gender: currentUser.value.gender || '',
+      firstName: currentUser.value.first_name || '',
+      lastName: currentUser.value.last_name || '',
+      email: currentUser.value.email || '',
+      phone: currentUser.value.phone || '',
+      street: currentUser.value.street || '',
+      houseNumber: currentUser.value.house_number || '',
+      postalCode: currentUser.value.zip_code || '',
+      city: currentUser.value.city || '',
+    };
+  }
+
+  // WICHTIG: Validierung NEU initialisieren NACH Daten laden mit den aktualisierten userInfo Daten
+  const validation = useValidation(userInfo.value)
+  Object.assign(errors, validation.errors)
+  clearTouched()
 })
 </script>
 
@@ -830,6 +852,7 @@ onMounted(() => {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
