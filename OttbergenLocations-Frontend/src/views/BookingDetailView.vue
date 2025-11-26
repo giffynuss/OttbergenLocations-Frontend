@@ -18,6 +18,16 @@
         <p class="text-red-800">{{ error }}</p>
       </div>
 
+      <!-- Success Message -->
+      <div v-if="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <p class="text-green-800">✓ {{ successMessage }}</p>
+      </div>
+
+      <!-- Error Message -->
+      <div v-if="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-red-800">✗ {{ errorMessage }}</p>
+      </div>
+
       <!-- Booking Details -->
       <div v-else-if="currentBooking" class="bg-white rounded-lg shadow-lg p-8">
         <div class="flex items-start justify-between mb-6">
@@ -115,11 +125,11 @@
             </dl>
           </div>
 
-          <!-- Stornierung Button (nur für bestätigte/pending Buchungen) -->
-          <div v-if="currentBooking.status === 'confirmed' || currentBooking.status === 'pending'">
+          <!-- Stornierung Button (nur für stornierbare Buchungen) -->
+          <div v-if="canBeCancelled" class="border-t border-luxury-light pt-6">
             <button
-              @click="handleCancelBooking"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              @click="showCancellationDialog = true"
+              class="btn-luxury-secondary"
             >
               Buchung stornieren
             </button>
@@ -137,21 +147,89 @@
           </div>
         </div>
       </div>
+
+      <!-- Stornierungsdialog -->
+      <div
+        v-if="showCancellationDialog"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+        @click.self="showCancellationDialog = false"
+      >
+        <div class="bg-luxury-ivory max-w-lg w-full shadow-luxury-xl">
+          <div class="bg-luxury-dark text-luxury-ivory p-6">
+            <h2 class="font-luxury text-2xl tracking-luxury">Buchung stornieren</h2>
+          </div>
+
+          <div class="p-6">
+            <p class="text-luxury-brown mb-4">
+              Möchten Sie diese Buchung wirklich stornieren?
+            </p>
+
+            <div class="bg-luxury-light p-4 mb-6 border-l-4 border-luxury-gold">
+              <p class="text-sm text-luxury-brown">
+                <strong>Buchung:</strong> {{ currentBooking?.placeName }}<br>
+                <strong>Zeitraum:</strong> {{ formatDateGerman(currentBooking?.checkIn || '') }} - {{ formatDateGerman(currentBooking?.checkOut || '') }}
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <label for="cancellationReason" class="block text-sm font-medium text-luxury-dark mb-2">
+                Grund der Stornierung (optional)
+              </label>
+              <textarea
+                id="cancellationReason"
+                v-model="cancellationReason"
+                rows="3"
+                class="input-luxury w-full"
+                placeholder="Bitte geben Sie einen Grund an..."
+              ></textarea>
+            </div>
+
+            <div class="flex gap-3 justify-end">
+              <button
+                @click="showCancellationDialog = false"
+                class="px-6 py-2 bg-luxury-light text-luxury-dark hover:bg-luxury-cream transition"
+              >
+                Abbrechen
+              </button>
+              <button
+                @click="confirmCancellation"
+                :disabled="isCancelling"
+                class="btn-luxury-secondary"
+              >
+                <span v-if="isCancelling">Storniere...</span>
+                <span v-else>Ja, stornieren</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useBookings } from '@/composables/useBookings'
 import { formatDateGerman, calculateNumberOfDays } from '@/types/place'
 import BookingStatusBadge from '@/components/BookingStatusBadge.vue'
 
 const route = useRoute()
+const router = useRouter()
 const { currentBooking, loading, error, fetchBookingById, cancelBooking } = useBookings()
 
 const bookingId = Number(route.params.id)
+const showCancellationDialog = ref(false)
+const cancellationReason = ref('')
+const isCancelling = ref(false)
+const successMessage = ref('')
+const errorMessage = ref('')
+
+// Buchung kann storniert werden wenn Status: pending, confirmed oder upcoming
+const canBeCancelled = computed(() => {
+  if (!currentBooking.value) return false
+  return ['pending', 'confirmed', 'upcoming'].includes(currentBooking.value.status)
+})
 
 onMounted(async () => {
   await fetchBookingById(bookingId)
@@ -167,17 +245,31 @@ const paymentMethodLabel = (method: string) => {
   return labels[method] || method
 }
 
-const handleCancelBooking = async () => {
-  if (!confirm('Möchten Sie diese Buchung wirklich stornieren?')) return
+const confirmCancellation = async () => {
+  isCancelling.value = true
+  errorMessage.value = ''
 
-  const reason = prompt('Bitte geben Sie einen Grund für die Stornierung an (optional):')
-  const result = await cancelBooking(bookingId, reason || undefined)
+  try {
+    const result = await cancelBooking(bookingId, cancellationReason.value || undefined)
 
-  if (result.success) {
-    alert('Buchung erfolgreich storniert')
-    await fetchBookingById(bookingId)
-  } else {
-    alert('Fehler beim Stornieren: ' + result.message)
+    if (result.success) {
+      successMessage.value = 'Buchung erfolgreich storniert. Sie erhalten eine Bestätigungs-E-Mail.'
+      showCancellationDialog.value = false
+
+      // Aktualisiere Buchungsdetails
+      await fetchBookingById(bookingId)
+
+      // Zeige Erfolgsbenachrichtigung
+      setTimeout(() => {
+        successMessage.value = ''
+      }, 5000)
+    } else {
+      errorMessage.value = result.message || 'Fehler beim Stornieren der Buchung'
+    }
+  } catch (err: any) {
+    errorMessage.value = err.message || 'Ein Fehler ist aufgetreten'
+  } finally {
+    isCancelling.value = false
   }
 }
 </script>

@@ -185,38 +185,40 @@ export function useBookings() {
   }
 
   /**
-   * Storniert eine Buchung
+   * Storniert eine Buchung (authentifiziert)
    */
   const cancelBooking = async (bookingId: number, reason?: string): Promise<{ success: boolean; message?: string }> => {
     loading.value = true
     error.value = null
 
     try {
-      const token = localStorage.getItem('authToken')
-
-      if (!token) {
-        error.value = 'Nicht authentifiziert'
-        return { success: false, message: 'Bitte melden Sie sich an' }
-      }
-
-      const response = await fetch(`${API_BASE_URL}/cancel.php`, {
+      const response = await fetch(`${API_BASE_URL}/cancel.php?id=${bookingId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Session-basierte Auth
-        body: JSON.stringify({ bookingId, reason })
+        body: JSON.stringify({ reason })
       })
 
       const data = await response.json()
 
       if (data.success) {
+        // Aktualisiere lokalen Status
+        if (currentBooking.value?.id === bookingId) {
+          currentBooking.value.status = 'cancelled'
+        }
+        const bookingIndex = bookings.value.findIndex(b => b.id === bookingId)
+        if (bookingIndex !== -1 && bookings.value[bookingIndex]) {
+          bookings.value[bookingIndex].status = 'cancelled'
+        }
+
         return {
           success: true,
-          message: data.message
+          message: data.message || 'Buchung erfolgreich storniert'
         }
       } else {
-        const errorMsg = data.message || 'Fehler beim Stornieren der Buchung'
+        const errorMsg = data.error?.message || data.message || 'Fehler beim Stornieren der Buchung'
         error.value = errorMsg
         return {
           success: false,
@@ -227,6 +229,51 @@ export function useBookings() {
       const errorMessage = err instanceof Error ? err.message : 'Netzwerkfehler'
       error.value = errorMessage
       console.error('Fehler beim Stornieren der Buchung:', err)
+      return {
+        success: false,
+        message: errorMessage
+      }
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Storniert eine Buchung per Token (ohne Authentifizierung)
+   */
+  const cancelBookingByToken = async (token: string, reason?: string): Promise<{ success: boolean; data?: any; message?: string }> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const url = `${API_BASE_URL}/cancel-token.php?token=${token}`
+      const options: RequestInit = {
+        method: reason ? 'POST' : 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+
+      if (reason) {
+        options.body = JSON.stringify({ reason })
+      }
+
+      const response = await fetch(url, options)
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error?.message || data.message || 'Stornierung fehlgeschlagen')
+      }
+
+      return {
+        success: true,
+        data: data.data,
+        message: data.message
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Netzwerkfehler'
+      error.value = errorMessage
+      console.error('Fehler beim Stornieren per Token:', err)
       return {
         success: false,
         message: errorMessage
@@ -247,6 +294,7 @@ export function useBookings() {
     createBooking,
     fetchMyBookings,
     fetchBookingById,
-    cancelBooking
+    cancelBooking,
+    cancelBookingByToken
   }
 }
