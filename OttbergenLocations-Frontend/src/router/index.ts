@@ -85,6 +85,18 @@ const routes: RouteRecordRaw[] = [
     name: 'checkout',
     component: () => import('../views/CheckoutView.vue'),
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/booking/:id',
+    name: 'booking-detail',
+    component: () => import('../views/BookingDetailView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/cancel-booking/:token',
+    name: 'cancel-booking',
+    component: () => import('../views/CancelBookingView.vue'),
+    meta: { requiresAuth: false }
   }
 ]
 

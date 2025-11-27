@@ -69,12 +69,10 @@ export interface Booking {
   bookingReference?: string // Buchungsnummer
   // ENTFERNT: subtotal, serviceFee, tax (Backend-Vereinfachung)
   status: 'pending' | 'confirmed' | 'rejected' | 'upcoming' | 'completed' | 'cancelled'
-  cancelledAt?: string
-  cancellationReason?: string // Wird auch für rejected-Grund verwendet
-  providerNotifiedAt?: string
-  userConfirmedAt?: string
+  cancelledAt?: string | null
+  cancellationReason?: string | null // Wird auch für rejected-Grund verwendet
   // Backend nutzt cancellationReason für Ablehnungen
-  // ENTFERNT: createdAt, updatedAt (nicht mehr vom Backend geliefert)
+  // ENTFERNT: createdAt, updatedAt, providerNotifiedAt, userConfirmedAt (nicht in DB vorhanden)
 }
 
 export interface BookingRequest {
