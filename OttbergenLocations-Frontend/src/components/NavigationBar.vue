@@ -40,6 +40,12 @@
 
           <!-- Angemeldet -->
           <template v-else>
+            <!-- Meine Buchungen Button -->
+            <router-link to="/my-bookings"
+              class="px-6 py-2.5 text-sm font-medium text-luxury-ivory bg-luxury-brown hover:bg-luxury-medium border border-luxury-gold transition-all duration-300 tracking-luxury">
+              Meine Buchungen
+            </router-link>
+
             <div class="flex items-center space-x-3 ml-4 pl-4 border-l-2 border-luxury-gold">
               <!-- E-Mail -->
               <span class="text-luxury-cream text-sm font-medium tracking-luxury">
@@ -116,6 +122,16 @@
                 {{ currentUser?.email }}
               </span>
             </div>
+
+            <router-link to="/my-bookings" @click="mobileMenuOpen = false"
+              class="block px-4 py-3 mb-2 text-base font-medium text-luxury-ivory hover:bg-luxury-dark transition-colors duration-300 border border-luxury-gold">
+              Meine Buchungen
+            </router-link>
+
+            <router-link to="/profile" @click="mobileMenuOpen = false"
+              class="block px-4 py-3 mb-2 text-base font-medium text-luxury-ivory hover:bg-luxury-dark transition-colors duration-300 border border-luxury-gold">
+              Mein Profil
+            </router-link>
 
             <button @click="handleLogout"
               class="w-full text-left px-4 py-3 text-base font-medium text-luxury-ivory hover:bg-luxury-dark transition-colors duration-300 border border-luxury-gold">

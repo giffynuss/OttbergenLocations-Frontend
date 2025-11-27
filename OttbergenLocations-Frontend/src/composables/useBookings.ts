@@ -89,14 +89,7 @@ export function useBookings() {
     error.value = null
 
     try {
-      const token = localStorage.getItem('authToken')
-
-      if (!token) {
-        error.value = 'Nicht authentifiziert'
-        return { success: false, message: 'Bitte melden Sie sich an' }
-      }
-
-      const response = await fetch(`${API_BASE_URL}/my-bookings.php`, {
+      const response = await fetch(`${API_BASE_URL}/index.php`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -140,19 +133,11 @@ export function useBookings() {
     error.value = null
 
     try {
-      const token = localStorage.getItem('authToken')
-
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json'
-      }
-
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
-
       const response = await fetch(`${API_BASE_URL}/get.php?id=${bookingId}`, {
         method: 'GET',
-        headers,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         credentials: 'include' // Session-basierte Auth
       })
 
