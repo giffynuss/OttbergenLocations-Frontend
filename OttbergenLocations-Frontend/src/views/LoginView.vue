@@ -1,5 +1,35 @@
 <template>
   <div class="min-h-screen flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-luxury-light">
+    <!-- Erfolgsbestätigung nach Registrierung -->
+    <Transition name="fade">
+      <div v-if="showRegistrationSuccess"
+        class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+        <div class="card-luxury p-6 shadow-2xl border-2 border-luxury-gold">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <svg class="w-10 h-10 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-luxury text-lg font-bold text-luxury-dark tracking-luxury">
+                Registrierung erfolgreich!
+              </h3>
+              <p class="text-sm text-luxury-brown font-light mt-1">
+                Ihr Account wurde erfolgreich erstellt. Sie können sich jetzt anmelden.
+              </p>
+            </div>
+            <button @click="showRegistrationSuccess = false" class="text-luxury-brown hover:text-luxury-dark">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <div class="max-w-md w-full">
       <!-- Überschrift -->
       <div class="text-center mb-10">
@@ -119,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { useValidation } from '@/composables/useValidation'
@@ -139,6 +169,22 @@ const formData = reactive({
 const { errors, validateField, hasErrors } = useValidation(formData)
 
 const generalError = ref('')
+const showRegistrationSuccess = ref(false)
+
+// Prüfe, ob die Registrierung erfolgreich war
+onMounted(() => {
+  if (route.query.registered === 'success') {
+    showRegistrationSuccess.value = true
+
+    // Entferne Query-Parameter aus der URL
+    router.replace({ path: '/login' })
+
+    // Blende Nachricht nach 5 Sekunden automatisch aus
+    setTimeout(() => {
+      showRegistrationSuccess.value = false
+    }, 5000)
+  }
+})
 
 // Form Valid Computed
 const isFormValid = computed(() => {
@@ -182,5 +228,34 @@ const handleLogin = async () => {
 /* Custom checkbox styling */
 input[type="checkbox"] {
   accent-color: var(--color-medium-brown);
+}
+
+/* Fade Transition für Erfolgsbestätigung */
+.fade-enter-active {
+  transition: all 0.6s ease-out;
+}
+
+.fade-leave-active {
+  transition: all 0.4s ease-in;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -30px);
+}
+
+.fade-enter-to {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.fade-leave-from {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -20px);
 }
 </style>

@@ -1,4 +1,30 @@
 <template>
+  <!-- Erfolgsbestätigung (außerhalb des Layouts) -->
+  <Transition name="slide-down">
+    <div v-if="showSuccessMessage"
+      class="fixed top-8 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4"
+      style="position: fixed !important;">
+      <div class="card-luxury p-6 shadow-2xl border-2 border-luxury-gold">
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            <svg class="w-10 h-10 text-luxury-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-luxury text-lg font-bold text-luxury-dark tracking-luxury">
+              Registrierung erfolgreich!
+            </h3>
+            <p class="text-sm text-luxury-brown font-light mt-1">
+              Sie werden zur Anmeldung weitergeleitet...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
   <div class="min-h-screen flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-luxury-light">
     <div class="max-w-3xl w-full">
       <!-- Überschrift -->
@@ -268,6 +294,7 @@ const formData = reactive({
 const { errors, validateField, hasErrors } = useValidation(formData);
 
 const generalError = ref("");
+const showSuccessMessage = ref(false);
 
 // Formularvalidierung prüfen
 const isFormValid = computed(() => {
@@ -321,7 +348,13 @@ const handleRegister = async () => {
   });
 
   if (result.success) {
-    router.push("/login");
+    // Erfolgsbestätigung anzeigen
+    showSuccessMessage.value = true;
+
+    // Nach 2.5 Sekunden zur Login-Seite weiterleiten mit success Parameter
+    setTimeout(() => {
+      router.push({ path: "/login", query: { registered: "success" } });
+    }, 2500);
   } else {
     generalError.value = result.message;
   }
@@ -333,5 +366,34 @@ const handleRegister = async () => {
 input[type="checkbox"],
 input[type="radio"] {
   accent-color: var(--color-medium-brown);
+}
+
+/* Slide-down Transition für Erfolgsbestätigung */
+.slide-down-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-down-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.slide-down-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -100%);
+}
+
+.slide-down-enter-to {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.slide-down-leave-from {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -100%);
 }
 </style>
