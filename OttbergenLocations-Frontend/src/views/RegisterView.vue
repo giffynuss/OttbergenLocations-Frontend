@@ -155,13 +155,13 @@
             <!-- PLZ und Ort -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label for="zipCode" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
+                <label for="postalCode" class="block text-sm font-medium text-luxury-dark mb-2 tracking-luxury">
                   PLZ
                 </label>
-                <input id="zipCode" v-model="formData.zipCode" type="text" required class="input-luxury"
-                  placeholder="12345" @blur="validateField('zipCode')" />
-                <p v-if="errors.zipCode" class="mt-2 text-sm text-red-600 font-light">
-                  {{ errors.zipCode }}
+                <input id="postalCode" v-model="formData.postalCode" type="text" required class="input-luxury"
+                  placeholder="12345" @blur="validateField('postalCode')" />
+                <p v-if="errors.postalCode" class="mt-2 text-sm text-red-600 font-light">
+                  {{ errors.postalCode }}
                 </p>
               </div>
 
@@ -242,6 +242,7 @@
 import { reactive, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth } from "@/composables/useAuth";
+import { useValidation } from "@/composables/useValidation";
 
 const router = useRouter();
 const { register } = useAuth();
@@ -257,130 +258,16 @@ const formData = reactive({
   confirmPassword: "",
   street: "",
   houseNumber: "",
-  zipCode: "",
+  postalCode: "",
   city: "",
   recaptcha: false,
   agbAccepted: false,
 });
 
-// Fehlertexte
-const errors = reactive({
-  firstName: "",
-  lastName: "",
-  gender: "",
-  email: "",
-  phone: "",
-  password: "",
-  confirmPassword: "",
-  street: "",
-  houseNumber: "",
-  zipCode: "",
-  city: "",
-});
+// Validierung mit useValidation Composable
+const { errors, validateField, hasErrors } = useValidation(formData);
 
 const generalError = ref("");
-
-// Validierungsfunktion
-const validateField = (fieldName: string) => {
-  switch (fieldName) {
-    case "firstName":
-    case "lastName":
-      if (!formData[fieldName]) {
-        errors[fieldName] = "Dieses Feld ist erforderlich";
-      } else if (formData[fieldName].length < 2) {
-        errors[fieldName] = "Mindestens 2 Zeichen erforderlich";
-      } else {
-        errors[fieldName] = "";
-      }
-      break;
-
-    case "email":
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!formData.email) {
-        errors.email = "E-Mail ist erforderlich";
-      } else if (!emailRegex.test(formData.email)) {
-        errors.email = "Bitte geben Sie eine gültige E-Mail-Adresse ein";
-      } else {
-        errors.email = "";
-      }
-      break;
-
-    case "gender":
-      if (!formData.gender) {
-        errors.gender = "Bitte wählen Sie eine Anrede aus";
-      } else {
-        errors.gender = "";
-      }
-      break;
-
-    case "phone":
-      const phoneRegex = /^[\d\s+()-]+$/;
-      if (!formData.phone) {
-        errors.phone = "Telefonnummer ist erforderlich";
-      } else if (!phoneRegex.test(formData.phone) || formData.phone.length < 6) {
-        errors.phone = "Bitte geben Sie eine gültige Telefonnummer ein";
-      } else {
-        errors.phone = "";
-      }
-      break;
-
-    case "password":
-      if (!formData.password) {
-        errors.password = "Passwort ist erforderlich";
-      } else if (formData.password.length < 10) {
-        errors.password = "Passwort muss mindestens 10 Zeichen lang sein";
-      } else if (!/[a-z]/.test(formData.password)) {
-        errors.password = "Mindestens 1 Kleinbuchstabe muss enthalten sein";
-      } else if (!/[A-Z]/.test(formData.password)) {
-        errors.password = "Mindestens 1 Großbuchstabe muss enthalten sein";
-      } else if (!/\d/.test(formData.password)) {
-        errors.password = "Mindestens 1 Zahl muss enthalten sein";
-      } else if (!/[!@#$%^&*+(),.?\":{}|<>_\-]/.test(formData.password)) {
-        errors.password = "Mindestens 1 Sonderzeichen muss enthalten sein";
-      } else {
-        errors.password = "";
-      }
-      break;
-
-    case "confirmPassword":
-      if (!formData.confirmPassword) {
-        errors.confirmPassword = "Bitte bestätigen Sie Ihr Passwort";
-      } else if (formData.password !== formData.confirmPassword) {
-        errors.confirmPassword = "Passwörter stimmen nicht überein";
-      } else {
-        errors.confirmPassword = "";
-      }
-      break;
-
-    case "street":
-    case "city":
-      if (!formData[fieldName]) {
-        errors[fieldName] = "Dieses Feld ist erforderlich";
-      } else {
-        errors[fieldName] = "";
-      }
-      break;
-
-    case "houseNumber":
-      if (!formData.houseNumber) {
-        errors.houseNumber = "Hausnummer ist erforderlich";
-      } else {
-        errors.houseNumber = "";
-      }
-      break;
-
-    case "zipCode":
-      const zipRegex = /^\d{5}$/;
-      if (!formData.zipCode) {
-        errors.zipCode = "PLZ ist erforderlich";
-      } else if (!zipRegex.test(formData.zipCode)) {
-        errors.zipCode = "PLZ muss 5 Ziffern haben";
-      } else {
-        errors.zipCode = "";
-      }
-      break;
-  }
-};
 
 // Formularvalidierung prüfen
 const isFormValid = computed(() => {
@@ -394,11 +281,11 @@ const isFormValid = computed(() => {
     formData.confirmPassword &&
     formData.street &&
     formData.houseNumber &&
-    formData.zipCode &&
+    formData.postalCode &&
     formData.city &&
     formData.recaptcha &&
     formData.agbAccepted &&
-    !Object.values(errors).some((error) => error !== "")
+    !hasErrors.value
   );
 });
 
@@ -406,9 +293,15 @@ const isFormValid = computed(() => {
 const handleRegister = async () => {
   generalError.value = "";
 
-  Object.keys(errors).forEach((field) => validateField(field));
+  // Alle Felder validieren
+  const fieldsToValidate = [
+    'firstName', 'lastName', 'gender', 'email', 'phone',
+    'password', 'confirmPassword', 'street', 'houseNumber',
+    'postalCode', 'city'
+  ];
+  fieldsToValidate.forEach((field) => validateField(field));
 
-  if (Object.values(errors).some((e) => e !== "")) {
+  if (hasErrors.value) {
     generalError.value = "Bitte korrigieren Sie die Fehler im Formular.";
     return;
   }
@@ -421,7 +314,7 @@ const handleRegister = async () => {
     phone: formData.phone,
     street: formData.street,
     houseNumber: formData.houseNumber,
-    zipCode: formData.zipCode,
+    zipCode: formData.postalCode,
     city: formData.city,
     password: formData.password,
     confirmPassword: formData.confirmPassword,

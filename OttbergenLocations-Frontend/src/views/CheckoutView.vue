@@ -656,8 +656,11 @@ const paymentMethodLabel = computed(() => {
   return paymentMethod.value ? labels[paymentMethod.value] : ''
 })
 
-// Validierung initialisieren
-const { errors, validateField, validateAllFieldsForced, hasErrors, clearTouched } = useValidation(userInfo.value)
+// Validierung initialisieren (wird nach dem Laden der Benutzerdaten neu initialisiert)
+let validation = useValidation(userInfo.value)
+let errors = validation.errors
+let validateField = validation.validateField
+let hasErrors = validation.hasErrors
 
 const canCheckout = computed(() => {
   const basicValid =
@@ -835,10 +838,11 @@ onMounted(async () => {
     };
   }
 
-  // WICHTIG: Validierung NEU initialisieren NACH Daten laden mit den aktualisierten userInfo Daten
-  const validation = useValidation(userInfo.value)
-  Object.assign(errors, validation.errors)
-  clearTouched()
+  // Validierung neu initialisieren mit den geladenen Benutzerdaten
+  validation = useValidation(userInfo.value)
+  errors = validation.errors
+  validateField = validation.validateField
+  hasErrors = validation.hasErrors
 })
 </script>
 

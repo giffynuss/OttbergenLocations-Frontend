@@ -29,7 +29,7 @@
             required
             class="input-luxury"
             placeholder="ihre@email.de"
-            @blur="validateEmail"
+            @blur="validateField('email')"
           />
           <p v-if="errors.email" class="mt-2 text-sm text-red-600 font-light">
             {{ errors.email }}
@@ -48,7 +48,7 @@
             required
             class="input-luxury"
             placeholder="Ihr Passwort"
-            @blur="validatePassword"
+            @blur="validateField('password')"
           />
           <p v-if="errors.password" class="mt-2 text-sm text-red-600 font-light">
             {{ errors.password }}
@@ -122,6 +122,7 @@
 import { ref, computed, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import { useValidation } from '@/composables/useValidation'
 
 const router = useRouter()
 const route = useRoute()
@@ -134,60 +135,28 @@ const formData = reactive({
   recaptcha: false
 })
 
-// Validation Errors
-const errors = reactive({
-  email: '',
-  password: ''
-})
+// Validierung mit useValidation Composable
+const { errors, validateField, hasErrors } = useValidation(formData)
 
 const generalError = ref('')
-
-// Email Validation
-const validateEmail = () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!formData.email) {
-    errors.email = 'E-Mail ist erforderlich'
-    return false
-  } else if (!emailRegex.test(formData.email)) {
-    errors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse ein'
-    return false
-  } else {
-    errors.email = ''
-    return true
-  }
-}
-
-// Password Validation
-const validatePassword = () => {
-  if (!formData.password) {
-    errors.password = 'Passwort ist erforderlich'
-    return false
-  } else if (formData.password.length < 6) {
-    errors.password = 'Passwort muss mindestens 6 Zeichen lang sein'
-    return false
-  } else {
-    errors.password = ''
-    return true
-  }
-}
 
 // Form Valid Computed
 const isFormValid = computed(() => {
   return formData.email &&
          formData.password &&
          formData.recaptcha &&
-         !errors.email &&
-         !errors.password
+         !hasErrors.value
 })
 
-// ⬇️ WICHTIG: Jetzt async, weil Backend Login async ist
+// Login Handler
 const handleLogin = async () => {
   generalError.value = ''
 
-  const isEmailValid = validateEmail()
-  const isPasswordValid = validatePassword()
+  // Validiere Email und Passwort
+  validateField('email')
+  validateField('password')
 
-  if (!isEmailValid || !isPasswordValid) {
+  if (hasErrors.value) {
     generalError.value = 'Bitte korrigieren Sie die Fehler im Formular'
     return
   }
