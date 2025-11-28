@@ -312,6 +312,22 @@ onMounted(async () => {
   await performSearch()
 })
 
+// Automatisch suchen wenn sich Datum ändert
+watch([checkInDate, checkOutDate], () => {
+  performSearch()
+})
+
+// Automatisch suchen mit Verzögerung bei Sucheingabe
+let searchTimeout: number | null = null
+watch(searchQuery, () => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  searchTimeout = window.setTimeout(() => {
+    performSearch()
+  }, 500) // 500ms Verzögerung
+})
+
 // Berechnung der Anzahl der Tage
 const numberOfDays = computed(() => {
   if (!checkInDate.value || !checkOutDate.value) return 0
@@ -359,7 +375,9 @@ const performSearch = async () => {
     console.log('Suchbegriff:', searchQuery.value)
     console.log('Check-in:', checkInDate.value)
     console.log('Check-out:', checkOutDate.value)
+    console.log('Filter-Objekt:', filters)
     console.log('Anzahl Ergebnisse:', searchResults.value.length)
+    console.log('Ergebnis-Orte:', searchResults.value.map(p => ({ id: p.id, name: p.name })))
     console.log('=========================')
   } else {
     console.error('Fehler bei der Suche:', result.message)

@@ -54,6 +54,9 @@ export function usePlaces() {
       const queryString = params.toString()
       const url = `${API_BASE_URL}/list.php${queryString ? `?${queryString}` : ''}`
 
+      console.log('📡 API Request URL:', url)
+      console.log('📡 Query Parameters:', Object.fromEntries(params))
+
       const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',
@@ -63,6 +66,9 @@ export function usePlaces() {
       })
 
       const data: PlacesListResponse = await response.json()
+
+      console.log('📡 API Response:', data)
+      console.log('📡 Anzahl Orte erhalten:', data.places?.length || 0)
 
       if (data.success) {
         places.value = data.places
