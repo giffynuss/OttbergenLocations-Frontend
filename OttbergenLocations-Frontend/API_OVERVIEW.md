@@ -54,6 +54,8 @@ Liste aller aktiven Orte (Frontend-optimiert).
 - `minCapacity` - Minimale Kapazität
 - `maxPrice` - Maximaler Preis pro Tag
 - `checkIn`, `checkOut` - Nur verfügbare Orte (YYYY-MM-DD)
+  - Filtert Orte mit überlappenden Buchungen aus (Status: pending, confirmed, upcoming)
+  - Beide Parameter müssen angegeben werden, sonst wird kein Datumsfilter angewendet
 
 **Response:**
 ```json
@@ -299,9 +301,17 @@ Buchung stornieren (eigene oder als Provider). Sendet automatisch Stornierungsbe
 ### GET/POST /bookings/cancel-token.php?token={token}
 Buchung per Token stornieren (ohne Authentifizierung). Wird von E-Mail-Links verwendet.
 
+**Query-Parameter:**
+- `token` (erforderlich): Der Stornierungstoken aus der E-Mail
+- `format=json` (optional): Wenn angegeben, wird eine JSON-Response zurückgegeben, sonst eine HTML-Bestätigungsseite
+
 **Request (POST, optional):** `{ "reason": "Grund der Stornierung" }`
 
-**Response:**
+**Verhalten:**
+- **Standard (ohne `format=json`)**: Zeigt eine benutzerfreundliche HTML-Bestätigungsseite an
+- **Mit `format=json`**: Gibt eine JSON-Response zurück (für API-Aufrufe)
+
+**Response (nur bei format=json):**
 ```json
 {
   "success": true,
@@ -498,9 +508,16 @@ Gesamtpreis = pricePerDay × Anzahl Tage
 
 ---
 
-**Version:** 1.3
-**Letztes Update:** 2025-11-27
+**Version:** 1.5
+**Letztes Update:** 2025-11-28
 **Changelog:**
+- v1.5: **Verfügbarkeitsfilter für `/places/list.php` optimiert** ✅
+  - `checkIn` & `checkOut` Parameter nun korrekt implementiert
+  - SQL-Filter direkt in Query integriert (Performance-Optimierung)
+  - Filtert Orte mit überlappenden Buchungen aus
+- v1.4: **SQL Injection Security Audit** durchgeführt - Alle Endpoints sicher ✅
+- v1.4: Security Report erstellt ([SECURITY_AUDIT_REPORT.md](SECURITY_AUDIT_REPORT.md))
+- v1.4: Dokumentation aktualisiert (Schema, Seed, Installation, README)
 - v1.3: `/bookings/get.php` Endpoint hinzugefügt für Frontend-Kompatibilität
 - v1.3: CORS-Header in allen Booking-Endpoints für Session-Support aktualisiert
 - v1.3: Response-Format von `/bookings/index.php` angepasst (`bookings` statt `data`)
