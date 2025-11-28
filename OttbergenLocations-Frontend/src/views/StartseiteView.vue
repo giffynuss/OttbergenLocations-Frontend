@@ -71,7 +71,7 @@
       </div>
 
       <!-- Optional: Scroll Down Indicator mit spitzen Ecken -->
-      <a href="#about" class="mt-12 animate-bounce block">
+      <a href="#about" class="mt-12 animate-bounce block py-8 scroll-arrow-link">
         <svg
           class="w-6 h-6 mx-auto text-luxury-gold cursor-pointer hover:text-luxury-ivory transition-colors duration-300"
           fill="none"
@@ -241,5 +241,10 @@ h1, p, .flex {
 button:hover,
 a:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Remove hover effect from scroll arrow link */
+.scroll-arrow-link:hover {
+  box-shadow: none;
 }
 </style>
